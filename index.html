@@ -10,26 +10,34 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0f0f13;
-      --surface: #1a1a22;
-      --surface2: #22222e;
-      --border: #2e2e3e;
-      --accent: #6c63ff;
-      --accent2: #a78bfa;
-      --green: #34d399;
-      --red: #f87171;
-      --yellow: #fbbf24;
-      --text: #e8e8f0;
-      --muted: #8888aa;
+      --bg: #f5f6fa;
+      --surface: #ffffff;
+      --surface2: #f0f1f7;
+      --border: #e4e6f0;
+      --accent: #5b51f0;
+      --accent-light: #ede9ff;
+      --green: #12b76a;
+      --green-light: #d1faeb;
+      --red: #f04438;
+      --red-light: #fef3f2;
+      --yellow: #f79009;
+      --yellow-light: #fef6e7;
+      --blue: #2e90fa;
+      --blue-light: #eff8ff;
+      --text: #1a1d2e;
+      --muted: #6b7280;
+      --muted2: #9ca3af;
       --radius: 16px;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.08);
 
-      --c1: #6c63ff;
-      --c2: #34d399;
-      --c3: #f87171;
-      --c4: #fbbf24;
-      --c5: #60a5fa;
-      --c6: #f472b6;
-      --c7: #a78bfa;
+      --c1: #5b51f0;
+      --c2: #12b76a;
+      --c3: #f04438;
+      --c4: #f79009;
+      --c5: #2e90fa;
+      --c6: #ee46bc;
+      --c7: #7a5af8;
     }
 
     body {
@@ -37,287 +45,346 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 0;
     }
 
     /* ── HEADER ── */
     header {
-      background: linear-gradient(135deg, #1a1a22 0%, #16162a 100%);
+      background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 20px 32px;
+      padding: 0 32px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
     }
     .logo {
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .header-right { display: flex; gap: 12px; align-items: center; }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--accent-light);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
     .user-pill {
       display: flex; align-items: center; gap: 8px;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 50px; padding: 6px 16px;
-      font-size: 0.8rem; color: var(--muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      color: var(--muted);
     }
     .user-dot {
-      width: 8px; height: 8px; border-radius: 50%;
+      width: 7px; height: 7px; border-radius: 50%;
       background: var(--green);
-      box-shadow: 0 0 8px var(--green);
     }
 
-    /* ── MAIN LAYOUT ── */
+    /* ── LAYOUT ── */
     .layout {
       display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 0;
-      min-height: calc(100vh - 65px);
+      grid-template-columns: 320px 1fr;
+      min-height: calc(100vh - 60px);
     }
 
     /* ── SIDEBAR ── */
     aside {
       background: var(--surface);
       border-right: 1px solid var(--border);
-      padding: 28px 24px;
+      padding: 24px 20px;
       overflow-y: auto;
     }
-    aside h2 {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      color: var(--muted);
+    .sidebar-section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--muted2);
       text-transform: uppercase;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .month-selector {
       display: flex; align-items: center; gap: 8px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .month-selector select {
       flex: 1;
-      background: var(--surface2); border: 1px solid var(--border);
-      color: var(--text); border-radius: 10px;
-      padding: 10px 14px; font-size: 0.9rem;
-      font-family: inherit; cursor: pointer;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      cursor: pointer;
       appearance: none;
+      font-weight: 500;
     }
     .btn-icon {
-      background: var(--surface2); border: 1px solid var(--border);
-      color: var(--text); border-radius: 10px;
-      width: 40px; height: 40px;
-      cursor: pointer; font-size: 1rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 10px;
+      width: 38px; height: 38px;
+      cursor: pointer; font-size: 1.1rem;
       display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s;
+      transition: all 0.15s;
+      flex-shrink: 0;
     }
-    .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-icon:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
-    /* Form fields */
-    .field { margin-bottom: 14px; }
+    .field { margin-bottom: 12px; }
     .field label {
-      display: block; font-size: 0.75rem; font-weight: 500;
-      color: var(--muted); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+    .field-dot {
+      width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0;
     }
     .field-row {
       display: flex; align-items: center;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; overflow: hidden;
-      transition: border-color 0.2s;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .field-row:focus-within { border-color: var(--accent); }
+    .field-row:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(91,81,240,.1);
+    }
     .field-icon {
-      width: 36px; text-align: center;
-      font-size: 1rem; color: var(--muted);
+      width: 34px; text-align: center;
+      font-size: 0.9rem;
       flex-shrink: 0;
     }
     .field-row input {
       flex: 1; background: transparent; border: none;
-      color: var(--text); padding: 10px 12px 10px 0;
-      font-size: 0.9rem; font-family: inherit;
+      color: var(--text);
+      padding: 9px 8px 9px 0;
+      font-size: 0.88rem; font-family: inherit;
       outline: none;
     }
-    .field-row input::placeholder { color: var(--muted); opacity: 0.6; }
+    .field-row input::placeholder { color: var(--muted2); }
     .field-unit {
-      padding: 0 12px; color: var(--muted); font-size: 0.78rem;
+      padding: 0 10px; color: var(--muted2);
+      font-size: 0.75rem; font-weight: 500;
       border-left: 1px solid var(--border);
     }
 
-    .section-divider {
-      display: flex; align-items: center; gap: 10px;
-      margin: 20px 0 16px;
+    .divider {
+      display: flex; align-items: center; gap: 8px;
+      margin: 16px 0 14px;
     }
-    .section-divider span {
-      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
-      color: var(--muted); text-transform: uppercase; white-space: nowrap;
+    .divider span {
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.1em; color: var(--muted2);
+      text-transform: uppercase; white-space: nowrap;
     }
-    .section-divider::before, .section-divider::after {
+    .divider::before, .divider::after {
       content: ''; flex: 1; height: 1px; background: var(--border);
     }
 
-    .category-dot {
-      display: inline-block; width: 8px; height: 8px;
-      border-radius: 2px; margin-right: 6px;
-      vertical-align: middle;
-    }
-
     .btn-save {
-      width: 100%; padding: 13px;
-      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      width: 100%; padding: 12px;
+      background: var(--accent);
       border: none; border-radius: 12px;
-      color: #fff; font-size: 0.95rem; font-weight: 600;
+      color: #fff; font-size: 0.92rem; font-weight: 700;
       font-family: inherit; cursor: pointer;
-      margin-top: 20px; transition: opacity 0.2s, transform 0.1s;
+      margin-top: 18px;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+      box-shadow: 0 2px 8px rgba(91,81,240,.3);
     }
-    .btn-save:hover { opacity: 0.9; }
+    .btn-save:hover { background: #4a42d6; box-shadow: 0 4px 16px rgba(91,81,240,.35); }
     .btn-save:active { transform: scale(0.98); }
 
-    /* Share link section */
     .share-box {
-      margin-top: 28px; padding: 16px;
-      background: var(--surface2); border: 1px solid var(--border);
+      margin-top: 20px;
+      padding: 14px;
+      background: var(--accent-light);
+      border: 1px solid #d4d0fb;
       border-radius: 12px;
     }
     .share-box h3 {
-      font-size: 0.75rem; font-weight: 600;
-      color: var(--muted); margin-bottom: 10px; letter-spacing: 0.05em;
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--accent); margin-bottom: 8px;
     }
-    .share-url {
-      display: flex; gap: 8px; align-items: center;
-    }
+    .share-url { display: flex; gap: 6px; }
     .share-url input {
-      flex: 1; background: var(--bg); border: 1px solid var(--border);
-      color: var(--muted); border-radius: 8px; padding: 8px 10px;
-      font-size: 0.72rem; font-family: monospace; outline: none;
+      flex: 1; background: #fff;
+      border: 1px solid #d4d0fb;
+      color: var(--muted); border-radius: 8px;
+      padding: 7px 10px; font-size: 0.7rem;
+      font-family: monospace; outline: none;
     }
     .btn-copy {
       background: var(--accent); border: none; border-radius: 8px;
-      color: #fff; padding: 8px 14px; font-size: 0.78rem;
-      font-weight: 600; font-family: inherit; cursor: pointer;
-      white-space: nowrap; transition: opacity 0.2s;
+      color: #fff; padding: 7px 12px; font-size: 0.75rem;
+      font-weight: 700; font-family: inherit; cursor: pointer;
+      white-space: nowrap; transition: background 0.15s;
     }
-    .btn-copy:hover { opacity: 0.85; }
+    .btn-copy:hover { background: #4a42d6; }
     .btn-copy.copied { background: var(--green); }
 
-    /* ── MAIN CONTENT ── */
-    main { padding: 28px 32px; overflow-y: auto; }
+    /* ── MAIN ── */
+    main { padding: 24px 28px; overflow-y: auto; }
 
-    /* Summary cards */
-    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    /* Cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
     .card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 20px;
-      position: relative; overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
     }
-    .card::before {
-      content: ''; position: absolute;
-      top: 0; left: 0; right: 0; height: 3px;
+    .card-icon-wrap {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; margin-bottom: 12px;
     }
-    .card.income::before { background: var(--green); }
-    .card.expense::before { background: var(--red); }
-    .card.savings::before { background: var(--accent); }
-    .card.ratio::before { background: var(--yellow); }
-
-    .card-label { font-size: 0.72rem; font-weight: 500; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.05em; }
-    .card-value { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+    .card.income .card-icon-wrap { background: var(--green-light); }
+    .card.expense .card-icon-wrap { background: var(--red-light); }
+    .card.savings .card-icon-wrap { background: var(--accent-light); }
+    .card.free .card-icon-wrap { background: var(--yellow-light); }
+    .card-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+    .card-value {
+      font-size: 1.4rem; font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.2;
+    }
     .card-value.green { color: var(--green); }
     .card-value.red { color: var(--red); }
-    .card-value.accent { color: var(--accent2); }
+    .card-value.accent { color: var(--accent); }
     .card-value.yellow { color: var(--yellow); }
-    .card-sub { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+    .card-sub { font-size: 0.72rem; color: var(--muted2); margin-top: 3px; }
 
-    /* Charts grid */
-    .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
-    .chart-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 24px;
-    }
-    .chart-card h3 {
-      font-size: 0.8rem; font-weight: 600; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px;
-    }
-    .chart-wrap { position: relative; height: 220px; }
-
-    /* Category breakdown table */
-    .table-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 24px;
+    /* Charts */
+    .charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
       margin-bottom: 20px;
     }
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .chart-card h3 {
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 18px;
+    }
+    .chart-wrap { position: relative; height: 210px; }
+
+    /* Table */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
     .table-card h3 {
-      font-size: 0.8rem; font-weight: 600; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px;
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 18px;
     }
     table { width: 100%; border-collapse: collapse; }
     th {
-      text-align: left; font-size: 0.72rem; font-weight: 600;
-      color: var(--muted); padding: 0 12px 12px 12px;
-      border-bottom: 1px solid var(--border);
+      text-align: left; font-size: 0.7rem; font-weight: 700;
+      color: var(--muted2); padding: 0 12px 10px;
+      border-bottom: 1.5px solid var(--border);
     }
     th:not(:first-child) { text-align: right; }
-    td { padding: 12px; font-size: 0.88rem; border-bottom: 1px solid var(--border); }
+    td { padding: 11px 12px; font-size: 0.87rem; border-bottom: 1px solid var(--border); }
     td:not(:first-child) { text-align: right; }
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--surface2); }
+    tr:not(:last-child):hover td { background: var(--surface2); }
 
-    .ratio-bar-wrap {
-      display: flex; align-items: center; gap: 10px;
+    .cat-label { display: flex; align-items: center; gap: 8px; }
+    .cat-badge {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; flex-shrink: 0;
     }
+
+    .ratio-bar-wrap { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
     .ratio-bar {
-      height: 6px; border-radius: 3px;
-      min-width: 4px;
-      transition: width 0.5s ease;
+      height: 6px; border-radius: 3px; min-width: 4px;
     }
-    .ratio-text { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+    .ratio-text { font-size: 0.8rem; color: var(--muted); width: 42px; text-align: right; }
 
     /* History */
     .history-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
     }
     .history-card h3 {
-      font-size: 0.8rem; font-weight: 600; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px;
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 18px;
     }
-    .chart-wrap-wide { position: relative; height: 180px; }
+    .chart-wrap-wide { position: relative; height: 170px; }
 
     /* Toast */
     .toast {
-      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
-      background: var(--green); color: #0f2218;
-      padding: 10px 24px; border-radius: 50px;
-      font-size: 0.85rem; font-weight: 600;
-      opacity: 0; transition: opacity 0.3s;
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--text); color: #fff;
+      padding: 10px 22px; border-radius: 50px;
+      font-size: 0.83rem; font-weight: 600;
+      opacity: 0; transition: opacity 0.25s;
       pointer-events: none; z-index: 999;
+      box-shadow: var(--shadow-md);
     }
     .toast.show { opacity: 1; }
 
-    /* Empty state */
-    .empty {
-      text-align: center; padding: 60px 20px;
-      color: var(--muted);
-    }
-    .empty-icon { font-size: 3rem; margin-bottom: 16px; }
-    .empty h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
-    .empty p { font-size: 0.85rem; }
+    /* Empty */
+    .empty { text-align: center; padding: 80px 20px; color: var(--muted); }
+    .empty-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .empty h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .empty p { font-size: 0.85rem; line-height: 1.7; }
 
-    /* Responsive */
+    /* Savings progress bar */
+    .progress-wrap { margin-top: 6px; }
+    .progress-bg {
+      height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden;
+    }
+    .progress-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+
     @media (max-width: 1100px) {
       .layout { grid-template-columns: 1fr; }
       aside { border-right: none; border-bottom: 1px solid var(--border); }
       .cards { grid-template-columns: repeat(2, 1fr); }
       .charts { grid-template-columns: 1fr; }
     }
-    @media (max-width: 640px) {
-      header { padding: 16px 18px; }
-      main { padding: 20px 16px; }
-      aside { padding: 20px 16px; }
+    @media (max-width: 600px) {
+      header { padding: 0 16px; }
+      main { padding: 16px; }
+      aside { padding: 18px 14px; }
       .cards { grid-template-columns: 1fr 1fr; }
     }
   </style>
@@ -325,83 +392,78 @@
 <body>
 
 <header>
-  <div class="logo">💰 개인 채산표</div>
-  <div class="header-right">
-    <div class="user-pill">
-      <span class="user-dot"></span>
-      <span id="userId-display">로딩 중...</span>
-    </div>
+  <div class="logo">
+    <div class="logo-icon">💰</div>
+    개인 채산표
+  </div>
+  <div class="user-pill">
+    <span class="user-dot"></span>
+    <span id="userId-display">로딩 중...</span>
   </div>
 </header>
 
 <div class="layout">
-  <!-- SIDEBAR: 입력 폼 -->
   <aside>
-    <h2>데이터 입력</h2>
-
+    <div class="sidebar-section-label">월 선택</div>
     <div class="month-selector">
       <select id="monthSelect"></select>
-      <button class="btn-icon" onclick="addMonth()">＋</button>
+      <button class="btn-icon" onclick="addMonth()" title="이전 달 추가">＋</button>
     </div>
 
+    <div class="sidebar-section-label">수입</div>
     <div class="field">
-      <label>💼 급여 (월 수입)</label>
+      <label><span class="field-dot" style="background:#12b76a"></span>월 급여</label>
       <div class="field-row">
-        <span class="field-icon">₩</span>
+        <span class="field-icon">💼</span>
         <input type="number" id="salary" placeholder="4,951,667" />
         <span class="field-unit">원</span>
       </div>
     </div>
 
-    <div class="section-divider"><span>지출 항목</span></div>
+    <div class="divider"><span>지출</span></div>
 
     <div class="field">
-      <label><span class="category-dot" style="background:var(--c2)"></span>식비</label>
+      <label><span class="field-dot" style="background:var(--c3)"></span>식비</label>
       <div class="field-row">
         <span class="field-icon">🍽</span>
         <input type="number" id="food" placeholder="500,000" />
         <span class="field-unit">원</span>
       </div>
     </div>
-
     <div class="field">
-      <label><span class="category-dot" style="background:var(--c3)"></span>주거비</label>
+      <label><span class="field-dot" style="background:var(--c4)"></span>주거비</label>
       <div class="field-row">
         <span class="field-icon">🏠</span>
         <input type="number" id="housing" placeholder="400,000" />
         <span class="field-unit">원</span>
       </div>
     </div>
-
     <div class="field">
-      <label><span class="category-dot" style="background:var(--c4)"></span>교통비</label>
+      <label><span class="field-dot" style="background:var(--c5)"></span>교통비</label>
       <div class="field-row">
         <span class="field-icon">🚌</span>
         <input type="number" id="transport" placeholder="100,000" />
         <span class="field-unit">원</span>
       </div>
     </div>
-
     <div class="field">
-      <label><span class="category-dot" style="background:var(--c5)"></span>성장비 (교육)</label>
+      <label><span class="field-dot" style="background:var(--c6)"></span>성장비 (교육)</label>
       <div class="field-row">
         <span class="field-icon">📚</span>
         <input type="number" id="education" placeholder="0" />
         <span class="field-unit">원</span>
       </div>
     </div>
-
     <div class="field">
-      <label><span class="category-dot" style="background:var(--c6)"></span>취향비 (취미·여행·쇼핑)</label>
+      <label><span class="field-dot" style="background:var(--c7)"></span>취향비 (취미·여행·쇼핑)</label>
       <div class="field-row">
         <span class="field-icon">🎨</span>
         <input type="number" id="lifestyle" placeholder="300,000" />
         <span class="field-unit">원</span>
       </div>
     </div>
-
     <div class="field">
-      <label><span class="category-dot" style="background:var(--c7)"></span>대출 상환</label>
+      <label><span class="field-dot" style="background:var(--c1)"></span>대출 상환</label>
       <div class="field-row">
         <span class="field-icon">🏦</span>
         <input type="number" id="loan" placeholder="1,200,000" />
@@ -409,8 +471,10 @@
       </div>
     </div>
 
+    <div class="divider"><span>저축</span></div>
+
     <div class="field">
-      <label><span class="category-dot" style="background:var(--c1)"></span>저축 및 투자</label>
+      <label><span class="field-dot" style="background:var(--c2)"></span>저축 및 투자</label>
       <div class="field-row">
         <span class="field-icon">📈</span>
         <input type="number" id="savings" placeholder="0" />
@@ -420,7 +484,6 @@
 
     <button class="btn-save" onclick="saveData()">저장하기</button>
 
-    <!-- Share -->
     <div class="share-box">
       <h3>🔗 내 채산표 공유 링크</h3>
       <div class="share-url">
@@ -430,12 +493,11 @@
     </div>
   </aside>
 
-  <!-- MAIN: 대시보드 -->
   <main id="dashboard">
     <div class="empty">
       <div class="empty-icon">📊</div>
       <h3>데이터를 입력해 주세요</h3>
-      <p>왼쪽 폼에서 수입과 지출을 입력하고 저장하면<br />대시보드가 표시됩니다.</p>
+      <p>왼쪽 폼에서 수입과 지출을 입력하고<br />저장하면 대시보드가 표시됩니다.</p>
     </div>
   </main>
 </div>
@@ -455,342 +517,285 @@ function getUserId() {
   }
   return uid;
 }
-
 const UID = getUserId();
-document.getElementById('userId-display').textContent = UID.slice(0, 8) + '...';
-
-const shareUrlEl = document.getElementById('shareUrl');
-shareUrlEl.value = window.location.href;
+document.getElementById('userId-display').textContent = UID.slice(0,8) + '...';
+document.getElementById('shareUrl').value = window.location.href;
 
 // ── STORAGE ──────────────────────────────────────────────
-function storageKey(month) { return `채산표_${UID}_${month}`; }
-function allMonthKeys() {
+function storageKey(m) { return `채산표_${UID}_${m}`; }
+function allMonths() {
   return Object.keys(localStorage)
     .filter(k => k.startsWith(`채산표_${UID}_`))
     .map(k => k.replace(`채산표_${UID}_`, ''))
     .sort();
 }
+function getData(m) { const r = localStorage.getItem(storageKey(m)); return r ? JSON.parse(r) : null; }
+function setData(m, d) { localStorage.setItem(storageKey(m), JSON.stringify(d)); }
 
-function getData(month) {
-  const raw = localStorage.getItem(storageKey(month));
-  return raw ? JSON.parse(raw) : null;
-}
-function setData(month, data) {
-  localStorage.setItem(storageKey(month), JSON.stringify(data));
-}
-
-// ── MONTH SELECT ──────────────────────────────────────────
-function currentYearMonth() {
+// ── MONTH ──────────────────────────────────────────────
+function currentYM() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 }
-
 function buildMonthList() {
   const sel = document.getElementById('monthSelect');
-  const existing = allMonthKeys();
-  const current = currentYearMonth();
-  const months = new Set([...existing, current]);
-  const sorted = [...months].sort().reverse();
+  const existing = allMonths();
+  const cur = currentYM();
+  const all = [...new Set([...existing, cur])].sort().reverse();
   const prev = sel.value;
   sel.innerHTML = '';
-  sorted.forEach(m => {
+  all.forEach(m => {
     const [y, mo] = m.split('-');
-    const label = `${y}년 ${parseInt(mo)}월`;
-    const opt = document.createElement('option');
-    opt.value = m; opt.textContent = label;
-    sel.appendChild(opt);
+    const o = document.createElement('option');
+    o.value = m; o.textContent = `${y}년 ${parseInt(mo)}월`;
+    sel.appendChild(o);
   });
-  sel.value = prev && months.has(prev) ? prev : sorted[0];
+  sel.value = (prev && all.includes(prev)) ? prev : all[0];
 }
-
 function addMonth() {
-  const sel = document.getElementById('monthSelect');
-  const cur = sel.value;
+  const cur = document.getElementById('monthSelect').value;
   const d = new Date(cur + '-01');
   d.setMonth(d.getMonth() - 1);
-  const newM = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  const nm = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  if (!allMonths().includes(nm)) setData(nm, {salary:0,food:0,housing:0,transport:0,education:0,lifestyle:0,loan:0,savings:0});
   buildMonthList();
-  const existing = allMonthKeys();
-  if (!existing.includes(newM)) {
-    // Add blank entry so it appears
-    const ms = new Set([...existing, newM]);
-    const sorted = [...ms].sort().reverse();
-    const sel2 = document.getElementById('monthSelect');
-    const mo = newM.split('-');
-    const opt = document.createElement('option');
-    opt.value = newM; opt.textContent = `${mo[0]}년 ${parseInt(mo[1])}월`;
-    sel2.insertBefore(opt, sel2.lastElementChild);
-  }
-  document.getElementById('monthSelect').value = newM;
-  loadForm(newM);
+  document.getElementById('monthSelect').value = nm;
+  loadForm(nm); renderDashboard(nm);
 }
+document.getElementById('monthSelect').addEventListener('change', e => { loadForm(e.target.value); renderDashboard(e.target.value); });
 
-document.getElementById('monthSelect').addEventListener('change', e => {
-  loadForm(e.target.value);
-  renderDashboard(e.target.value);
-});
-
-// ── FORM LOAD / SAVE ──────────────────────────────────────
+// ── FORM ──────────────────────────────────────────────
 const FIELDS = ['salary','food','housing','transport','education','lifestyle','loan','savings'];
-
-function loadForm(month) {
-  const data = getData(month);
-  FIELDS.forEach(f => {
-    document.getElementById(f).value = data ? (data[f] || '') : '';
-  });
+function loadForm(m) {
+  const d = getData(m);
+  FIELDS.forEach(f => { document.getElementById(f).value = d ? (d[f] || '') : ''; });
 }
-
 function saveData() {
-  const month = document.getElementById('monthSelect').value;
-  const data = {};
-  FIELDS.forEach(f => { data[f] = parseFloat(document.getElementById(f).value) || 0; });
-  setData(month, data);
-  buildMonthList();
-  renderDashboard(month);
+  const m = document.getElementById('monthSelect').value;
+  const d = {};
+  FIELDS.forEach(f => { d[f] = parseFloat(document.getElementById(f).value) || 0; });
+  setData(m, d); buildMonthList(); renderDashboard(m);
   showToast('저장되었습니다 ✓');
 }
 
 // ── HELPERS ──────────────────────────────────────────────
 const FMT = new Intl.NumberFormat('ko-KR');
-const COLORS = ['var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)','var(--c6)','var(--c7)'];
-const COLORS_HEX = ['#6c63ff','#34d399','#f87171','#fbbf24','#60a5fa','#f472b6','#a78bfa'];
+const COLORS = ['#5b51f0','#f04438','#f79009','#2e90fa','#ee46bc','#7a5af8','#12b76a'];
+const BG = ['#ede9ff','#fef3f2','#fef6e7','#eff8ff','#fdf2fa','#f4f3ff','#d1faeb'];
 
 const CATEGORIES = [
-  { id:'food',       label:'식비',               icon:'🍽' },
-  { id:'housing',    label:'주거비',             icon:'🏠' },
-  { id:'transport',  label:'교통비',             icon:'🚌' },
-  { id:'education',  label:'성장비',             icon:'📚' },
-  { id:'lifestyle',  label:'취향비',             icon:'🎨' },
-  { id:'loan',       label:'대출 상환',          icon:'🏦' },
-  { id:'savings',    label:'저축·투자',          icon:'📈' },
+  { id:'food',      label:'식비',          icon:'🍽', c:COLORS[1], bg:BG[1] },
+  { id:'housing',   label:'주거비',        icon:'🏠', c:COLORS[2], bg:BG[2] },
+  { id:'transport', label:'교통비',        icon:'🚌', c:COLORS[3], bg:BG[3] },
+  { id:'education', label:'성장비',        icon:'📚', c:COLORS[4], bg:BG[4] },
+  { id:'lifestyle', label:'취향비',        icon:'🎨', c:COLORS[5], bg:BG[5] },
+  { id:'loan',      label:'대출 상환',     icon:'🏦', c:COLORS[0], bg:BG[0] },
+  { id:'savings',   label:'저축·투자',     icon:'📈', c:COLORS[6], bg:BG[6] },
 ];
 
 function toWon(n) {
-  if (n >= 100000000) return (n/100000000).toFixed(1) + '억';
-  if (n >= 10000) return Math.round(n/10000) + '만';
+  if (n >= 100000000) return (n/100000000).toFixed(1)+'억';
+  if (n >= 10000) return Math.round(n/10000)+'만';
   return FMT.format(n);
 }
 
-// ── DASHBOARD RENDER ──────────────────────────────────────
-let donutChart = null, barChart = null, historyChart = null;
+// ── DASHBOARD ──────────────────────────────────────────
+let donutChart=null, barChart=null, histChart=null;
 
-function renderDashboard(month) {
-  const data = getData(month);
+function renderDashboard(m) {
+  const data = getData(m);
   const main = document.getElementById('dashboard');
-
-  if (!data || data.salary === 0) {
+  if (!data || !data.salary) {
     main.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><h3>데이터가 없습니다</h3><p>왼쪽 폼에서 데이터를 입력하고 저장하세요.</p></div>`;
-    if (donutChart) { donutChart.destroy(); donutChart = null; }
-    if (barChart) { barChart.destroy(); barChart = null; }
-    if (historyChart) { historyChart.destroy(); historyChart = null; }
-    return;
+    [donutChart,barChart,histChart].forEach(c => { if(c) c.destroy(); });
+    donutChart=barChart=histChart=null; return;
   }
 
-  const salary = data.salary || 0;
-  const expenses = CATEGORIES.filter(c => c.id !== 'savings').reduce((s, c) => s + (data[c.id]||0), 0);
-  const savingsAmt = data.savings || 0;
-  const totalOut = expenses + savingsAmt;
-  const free = salary - totalOut;
-  const savingsRatio = salary > 0 ? ((savingsAmt / salary) * 100) : 0;
+  const salary = data.salary||0;
+  const expCats = CATEGORIES.filter(c=>c.id!=='savings');
+  const expenses = expCats.reduce((s,c)=>s+(data[c.id]||0), 0);
+  const sav = data.savings||0;
+  const total = expenses + sav;
+  const free = salary - total;
+  const savRatio = salary>0 ? (sav/salary*100) : 0;
+  const expRatio = salary>0 ? (expenses/salary*100) : 0;
 
   main.innerHTML = `
-    <!-- Summary Cards -->
     <div class="cards">
       <div class="card income">
+        <div class="card-icon-wrap">💼</div>
         <div class="card-label">월 수입</div>
-        <div class="card-value green">${FMT.format(salary)}<span style="font-size:0.8rem;font-weight:400;color:var(--muted)"> 원</span></div>
+        <div class="card-value green">${FMT.format(salary)}<small style="font-size:.7rem;font-weight:500;color:var(--muted)"> 원</small></div>
       </div>
       <div class="card expense">
+        <div class="card-icon-wrap">💸</div>
         <div class="card-label">총 지출</div>
-        <div class="card-value red">${FMT.format(expenses)}<span style="font-size:0.8rem;font-weight:400;color:var(--muted)"> 원</span></div>
-        <div class="card-sub">수입의 ${salary>0?((expenses/salary)*100).toFixed(1):0}%</div>
+        <div class="card-value red">${FMT.format(expenses)}<small style="font-size:.7rem;font-weight:500;color:var(--muted)"> 원</small></div>
+        <div class="card-sub">수입의 ${expRatio.toFixed(1)}%</div>
       </div>
       <div class="card savings">
+        <div class="card-icon-wrap">📈</div>
         <div class="card-label">저축·투자</div>
-        <div class="card-value accent">${FMT.format(savingsAmt)}<span style="font-size:0.8rem;font-weight:400;color:var(--muted)"> 원</span></div>
-        <div class="card-sub">저축률 ${savingsRatio.toFixed(1)}%</div>
+        <div class="card-value accent">${FMT.format(sav)}<small style="font-size:.7rem;font-weight:500;color:var(--muted)"> 원</small></div>
+        <div class="card-sub">저축률 ${savRatio.toFixed(1)}%</div>
+        <div class="progress-wrap"><div class="progress-bg"><div class="progress-fill" style="background:var(--accent);width:${Math.min(savRatio,100)}%"></div></div></div>
       </div>
-      <div class="card ratio">
+      <div class="card free">
+        <div class="card-icon-wrap">${free>=0?'✨':'⚠️'}</div>
         <div class="card-label">잉여금</div>
-        <div class="card-value ${free>=0?'yellow':'red'}">${free<0?'-':''}${FMT.format(Math.abs(free))}<span style="font-size:0.8rem;font-weight:400;color:var(--muted)"> 원</span></div>
-        <div class="card-sub">${free<0?'⚠ 적자':'안전 수준'}</div>
+        <div class="card-value ${free>=0?'yellow':'red'}">${free<0?'-':''}${FMT.format(Math.abs(free))}<small style="font-size:.7rem;font-weight:500;color:var(--muted)"> 원</small></div>
+        <div class="card-sub">${free<0?'적자 상태':'여유 있음'}</div>
       </div>
     </div>
 
-    <!-- Charts -->
     <div class="charts">
       <div class="chart-card">
-        <h3>지출 구성</h3>
+        <h3>지출 구성 비율</h3>
         <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
       </div>
       <div class="chart-card">
-        <h3>항목별 금액</h3>
+        <h3>항목별 지출 금액</h3>
         <div class="chart-wrap"><canvas id="barChart"></canvas></div>
       </div>
     </div>
 
-    <!-- Breakdown Table -->
     <div class="table-card">
-      <h3>항목별 상세</h3>
+      <h3>항목별 상세 분석</h3>
       <table>
         <thead>
           <tr>
             <th>항목</th>
             <th>금액</th>
-            <th>비율 (수입 대비)</th>
-            <th>비율 (지출 대비)</th>
+            <th>수입 대비</th>
+            <th>지출 대비</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
 
-    <!-- History -->
     <div class="history-card">
       <h3>월별 추이</h3>
-      <div class="chart-wrap-wide"><canvas id="historyChart"></canvas></div>
+      <div class="chart-wrap-wide"><canvas id="histChart"></canvas></div>
     </div>
   `;
 
   // Table
   const tbody = document.getElementById('tableBody');
-  CATEGORIES.forEach((cat, i) => {
-    const amt = data[cat.id] || 0;
-    const ratioIncome = salary > 0 ? (amt / salary * 100) : 0;
-    const ratioExpense = expenses > 0 && cat.id !== 'savings' ? (amt / expenses * 100) : 0;
-    const barW = Math.min(ratioIncome * 2, 120);
-    tbody.innerHTML += `
-      <tr>
-        <td><span class="category-dot" style="background:${COLORS[i]}"></span>${cat.icon} ${cat.label}</td>
-        <td><strong>${FMT.format(amt)}</strong> 원</td>
-        <td>
-          <div class="ratio-bar-wrap">
-            <div class="ratio-bar" style="background:${COLORS[i]};width:${barW}px"></div>
-            <span class="ratio-text">${ratioIncome.toFixed(1)}%</span>
-          </div>
-        </td>
-        <td style="color:var(--muted)">${cat.id !== 'savings' ? ratioExpense.toFixed(1)+'%' : '—'}</td>
-      </tr>
-    `;
+  CATEGORIES.forEach(cat => {
+    const amt = data[cat.id]||0;
+    const ri = salary>0 ? amt/salary*100 : 0;
+    const re = expenses>0 && cat.id!=='savings' ? amt/expenses*100 : 0;
+    const bw = Math.min(ri*2.2, 100);
+    tbody.innerHTML += `<tr>
+      <td><div class="cat-label">
+        <div class="cat-badge" style="background:${cat.bg}">${cat.icon}</div>
+        <span style="font-weight:500">${cat.label}</span>
+      </div></td>
+      <td><strong>${FMT.format(amt)}</strong> 원</td>
+      <td><div class="ratio-bar-wrap">
+        <div class="ratio-bar" style="background:${cat.c};width:${bw}px"></div>
+        <span class="ratio-text">${ri.toFixed(1)}%</span>
+      </div></td>
+      <td style="color:var(--muted)">${cat.id!=='savings'?re.toFixed(1)+'%':'—'}</td>
+    </tr>`;
   });
-  // Total row
-  tbody.innerHTML += `
-    <tr style="font-weight:700;border-top:2px solid var(--border)">
-      <td>합계</td>
-      <td>${FMT.format(totalOut)} 원</td>
-      <td><span style="color:var(--yellow)">${salary>0?((totalOut/salary)*100).toFixed(1):0}%</span></td>
-      <td>100%</td>
-    </tr>
-  `;
+  tbody.innerHTML += `<tr style="font-weight:700;background:var(--surface2)">
+    <td><div class="cat-label"><div class="cat-badge" style="background:#e0e7ff">📊</div><span>합계</span></div></td>
+    <td>${FMT.format(total)} 원</td>
+    <td><span style="color:var(--accent);font-weight:700">${salary>0?(total/salary*100).toFixed(1):0}%</span></td>
+    <td style="color:var(--muted)">100%</td>
+  </tr>`;
 
-  // Donut chart
-  if (donutChart) donutChart.destroy();
-  const donutData = CATEGORIES.map(c => data[c.id] || 0);
+  // Donut
+  if(donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('donutChart'), {
     type: 'doughnut',
     data: {
-      labels: CATEGORIES.map(c => c.label),
-      datasets: [{ data: donutData, backgroundColor: COLORS_HEX, borderWidth: 2, borderColor: '#1a1a22' }]
+      labels: CATEGORIES.map(c=>c.label),
+      datasets: [{ data: CATEGORIES.map(c=>data[c.id]||0), backgroundColor: COLORS, borderWidth: 3, borderColor: '#fff' }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      cutout: '65%',
+      responsive:true, maintainAspectRatio:false, cutout:'62%',
       plugins: {
-        legend: { position: 'right', labels: { color: '#8888aa', font: { family: 'Noto Sans KR', size: 11 }, padding: 12, boxWidth: 12 } },
-        tooltip: { callbacks: { label: ctx => ` ${FMT.format(ctx.raw)} 원 (${salary>0?(ctx.raw/salary*100).toFixed(1):0}%)` } }
+        legend: { position:'right', labels:{ color:'#6b7280', font:{family:'Noto Sans KR',size:11}, padding:10, boxWidth:10, usePointStyle:true } },
+        tooltip: { callbacks:{ label: ctx => ` ${FMT.format(ctx.raw)} 원 (${salary>0?(ctx.raw/salary*100).toFixed(1):0}%)` } }
       }
     }
   });
 
-  // Bar chart
-  if (barChart) barChart.destroy();
+  // Bar
+  if(barChart) barChart.destroy();
   barChart = new Chart(document.getElementById('barChart'), {
     type: 'bar',
     data: {
-      labels: CATEGORIES.map(c => c.label),
-      datasets: [{
-        data: CATEGORIES.map(c => data[c.id] || 0),
-        backgroundColor: COLORS_HEX,
-        borderRadius: 6, borderSkipped: false
-      }]
+      labels: CATEGORIES.map(c=>c.label),
+      datasets: [{ data: CATEGORIES.map(c=>data[c.id]||0), backgroundColor: COLORS, borderRadius:8, borderSkipped:false }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${FMT.format(ctx.raw)} 원` } } },
+      responsive:true, maintainAspectRatio:false,
+      plugins: { legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ` ${FMT.format(ctx.raw)} 원` } } },
       scales: {
-        x: { ticks: { color: '#8888aa', font: { family: 'Noto Sans KR', size: 10 } }, grid: { color: 'transparent' } },
-        y: { ticks: { color: '#8888aa', font: { size: 10 }, callback: v => toWon(v) }, grid: { color: '#2e2e3e' } }
+        x: { ticks:{color:'#9ca3af',font:{family:'Noto Sans KR',size:10}}, grid:{display:false} },
+        y: { ticks:{color:'#9ca3af',font:{size:10},callback:v=>toWon(v)}, grid:{color:'#f0f1f7'} }
       }
     }
   });
 
-  // History chart
   renderHistory();
 }
 
 function renderHistory() {
-  const months = allMonthKeys().sort();
-  if (months.length < 1) return;
+  const months = allMonths().sort();
+  if(!months.length) return;
+  const labels = months.map(m=>{ const [y,mo]=m.split('-'); return `${y.slice(2)}/${parseInt(mo)}`; });
+  const inc = months.map(m=>(getData(m)||{}).salary||0);
+  const exp = months.map(m=>{ const d=getData(m)||{}; return CATEGORIES.filter(c=>c.id!=='savings').reduce((s,c)=>s+(d[c.id]||0),0); });
+  const sav = months.map(m=>(getData(m)||{}).savings||0);
 
-  const labels = months.map(m => { const [y,mo]=m.split('-'); return `${y.slice(2)}년 ${parseInt(mo)}월`; });
-  const incomes = months.map(m => (getData(m)||{}).salary || 0);
-  const exps = months.map(m => {
-    const d = getData(m)||{};
-    return CATEGORIES.filter(c=>c.id!=='savings').reduce((s,c)=>s+(d[c.id]||0),0);
-  });
-  const savs = months.map(m => (getData(m)||{}).savings || 0);
-
-  if (historyChart) historyChart.destroy();
-  const el = document.getElementById('historyChart');
-  if (!el) return;
-  historyChart = new Chart(el, {
-    type: 'line',
+  if(histChart) histChart.destroy();
+  const el = document.getElementById('histChart');
+  if(!el) return;
+  histChart = new Chart(el, {
+    type:'line',
     data: {
       labels,
       datasets: [
-        { label: '수입', data: incomes, borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.1)', tension: 0.4, fill: false, pointRadius: 5 },
-        { label: '지출', data: exps, borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.1)', tension: 0.4, fill: false, pointRadius: 5 },
-        { label: '저축', data: savs, borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.1)', tension: 0.4, fill: false, pointRadius: 5 },
+        { label:'수입', data:inc, borderColor:'#12b76a', backgroundColor:'rgba(18,183,106,.08)', tension:0.4, fill:true, pointRadius:5, pointBackgroundColor:'#12b76a' },
+        { label:'지출', data:exp, borderColor:'#f04438', backgroundColor:'rgba(240,68,56,.06)', tension:0.4, fill:true, pointRadius:5, pointBackgroundColor:'#f04438' },
+        { label:'저축', data:sav, borderColor:'#5b51f0', backgroundColor:'rgba(91,81,240,.06)', tension:0.4, fill:true, pointRadius:5, pointBackgroundColor:'#5b51f0' },
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: '#8888aa', font: { family: 'Noto Sans KR', size: 11 }, padding: 16, boxWidth: 12 } },
-        tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${FMT.format(ctx.raw)} 원` } }
-      },
+      responsive:true, maintainAspectRatio:false,
+      plugins: { legend:{ labels:{ color:'#6b7280', font:{family:'Noto Sans KR',size:11}, padding:14, boxWidth:10, usePointStyle:true } }, tooltip:{ callbacks:{ label: ctx => ` ${ctx.dataset.label}: ${FMT.format(ctx.raw)} 원` } } },
       scales: {
-        x: { ticks: { color: '#8888aa', font: { family: 'Noto Sans KR', size: 10 } }, grid: { color: '#2e2e3e' } },
-        y: { ticks: { color: '#8888aa', font: { size: 10 }, callback: v => toWon(v) }, grid: { color: '#2e2e3e' } }
+        x: { ticks:{color:'#9ca3af',font:{family:'Noto Sans KR',size:10}}, grid:{color:'#f0f1f7'} },
+        y: { ticks:{color:'#9ca3af',font:{size:10},callback:v=>toWon(v)}, grid:{color:'#f0f1f7'} }
       }
     }
   });
 }
 
-// ── SHARE ──────────────────────────────────────────────────
+// ── SHARE ──────────────────────────────────────────────
 function copyLink() {
-  const url = window.location.href;
-  navigator.clipboard.writeText(url).then(() => {
+  navigator.clipboard.writeText(window.location.href).then(() => {
     const btn = document.getElementById('copyBtn');
-    btn.textContent = '복사됨 ✓';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 2000);
+    btn.textContent = '복사됨 ✓'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent='복사'; btn.classList.remove('copied'); }, 2000);
     showToast('링크가 복사되었습니다');
   });
 }
-
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ── INIT ──────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────
 buildMonthList();
-const initMonth = document.getElementById('monthSelect').value;
-loadForm(initMonth);
-renderDashboard(initMonth);
+const initM = document.getElementById('monthSelect').value;
+loadForm(initM); renderDashboard(initM);
 </script>
 </body>
 </html>
