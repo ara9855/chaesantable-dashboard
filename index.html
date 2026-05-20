@@ -3,253 +3,223 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>개인 채산표</title>
+  <title>채산표</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #f5f6fa;
-      --surface: #ffffff;
-      --surface2: #f0f1f7;
-      --border: #e4e6f0;
-      --accent: #5b51f0;
-      --accent-light: #ede9ff;
-      --green: #12b76a;
-      --green-light: #d1faeb;
-      --red: #f04438;
-      --red-light: #fef3f2;
-      --yellow: #f79009;
-      --yellow-light: #fef6e7;
-      --text: #1a1d2e;
-      --muted: #6b7280;
-      --muted2: #9ca3af;
+      --bg: #f5f6fa; --surface: #fff; --surface2: #f0f1f7; --border: #e4e6f0;
+      --accent: #5b51f0; --accent-light: #ede9ff;
+      --green: #12b76a; --green-light: #d1faeb;
+      --red: #f04438; --red-light: #fef3f2;
+      --yellow: #f79009; --yellow-light: #fef6e7;
+      --text: #1a1d2e; --muted: #6b7280; --muted2: #9ca3af;
       --radius: 16px;
       --shadow: 0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
-      --shadow-md: 0 4px 16px rgba(0,0,0,.08);
     }
-
     body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-    /* HEADER */
+    /* ── HEADER ── */
     header {
       background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 0 32px; height: 60px;
+      padding: 0 28px; height: 60px;
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow);
     }
     .logo { font-size: 1.1rem; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px; }
-    .logo-icon { width: 32px; height: 32px; background: var(--accent-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-    .user-pill { display: flex; align-items: center; gap: 7px; background: var(--surface2); border: 1px solid var(--border); border-radius: 50px; padding: 5px 13px; font-size: 0.77rem; color: var(--muted); }
+    .logo-icon { width: 30px; height: 30px; background: var(--accent-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: .95rem; }
+
+    /* ── TABS ── */
+    .tabs { display: flex; gap: 4px; background: var(--surface2); border-radius: 10px; padding: 4px; }
+    .tab-btn {
+      padding: 7px 18px; border-radius: 7px; border: none; cursor: pointer;
+      font-family: inherit; font-size: .83rem; font-weight: 600; color: var(--muted);
+      background: transparent; transition: all .15s; white-space: nowrap;
+    }
+    .tab-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+    .tab-btn[data-tab="personal"].active { color: var(--accent); }
+    .tab-btn[data-tab="biz"].active { color: #059669; }
+
+    .user-pill { display: flex; align-items: center; gap: 7px; background: var(--surface2); border: 1px solid var(--border); border-radius: 50px; padding: 5px 13px; font-size: .77rem; color: var(--muted); }
     .user-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
 
-    /* LAYOUT */
+    /* ── LAYOUT ── */
     .layout { display: grid; grid-template-columns: 300px 1fr; min-height: calc(100vh - 60px); }
 
-    /* SIDEBAR */
+    /* ── SIDEBAR ── */
     aside { background: var(--surface); border-right: 1px solid var(--border); padding: 20px 18px; overflow-y: auto; }
-    .sec-label { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.12em; color: var(--muted2); text-transform: uppercase; margin-bottom: 10px; }
+    .sec-label { font-size: .67rem; font-weight: 700; letter-spacing: .12em; color: var(--muted2); text-transform: uppercase; margin-bottom: 10px; }
 
-    /* Month selector */
     .month-row { display: flex; align-items: center; gap: 7px; margin-bottom: 18px; }
-    .month-row select { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 8px 11px; font-size: 0.87rem; font-family: inherit; cursor: pointer; appearance: none; font-weight: 500; }
+    .month-row select { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 8px 11px; font-size: .87rem; font-family: inherit; cursor: pointer; appearance: none; font-weight: 500; }
     .btn-icon { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 10px; width: 36px; height: 36px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all .15s; flex-shrink: 0; }
     .btn-icon:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
-    /* Salary field */
-    .salary-field { margin-bottom: 18px; }
-    .salary-field label { display: flex; align-items: center; gap: 6px; font-size: 0.73rem; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+    .income-field { margin-bottom: 18px; }
+    .income-field label { display: flex; align-items: center; gap: 6px; font-size: .73rem; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
     .field-row { display: flex; align-items: center; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color .15s, box-shadow .15s; }
     .field-row:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(91,81,240,.1); }
-    .field-icon { width: 32px; text-align: center; font-size: 0.9rem; flex-shrink: 0; }
-    .field-row input { flex: 1; background: transparent; border: none; color: var(--text); padding: 9px 8px 9px 0; font-size: 0.88rem; font-family: inherit; outline: none; }
+    .field-icon { width: 32px; text-align: center; font-size: .9rem; flex-shrink: 0; }
+    .field-row input { flex: 1; background: transparent; border: none; color: var(--text); padding: 9px 8px 9px 0; font-size: .88rem; font-family: inherit; outline: none; }
     .field-row input::placeholder { color: var(--muted2); }
-    .field-unit { padding: 0 10px; color: var(--muted2); font-size: 0.73rem; font-weight: 500; border-left: 1px solid var(--border); white-space: nowrap; }
+    .field-unit { padding: 0 10px; color: var(--muted2); font-size: .73rem; font-weight: 500; border-left: 1px solid var(--border); white-space: nowrap; }
 
-    /* Category items */
     .divider { display: flex; align-items: center; gap: 8px; margin: 4px 0 12px; }
-    .divider span { font-size: 0.67rem; font-weight: 700; letter-spacing: .1em; color: var(--muted2); text-transform: uppercase; white-space: nowrap; }
+    .divider span { font-size: .67rem; font-weight: 700; letter-spacing: .1em; color: var(--muted2); text-transform: uppercase; white-space: nowrap; }
     .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
+    /* category items */
     .cat-item { margin-bottom: 10px; }
-
-    /* Category header: view mode */
     .cat-view { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-    .cat-view-label { display: flex; align-items: center; gap: 6px; font-size: 0.73rem; font-weight: 600; color: var(--muted); }
+    .cat-view-label { display: flex; align-items: center; gap: 6px; font-size: .73rem; font-weight: 600; color: var(--muted); }
     .cat-dot { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
     .cat-actions { display: flex; gap: 3px; opacity: 0; transition: opacity .15s; }
     .cat-item:hover .cat-actions { opacity: 1; }
-    .btn-xs {
-      background: none; border: 1px solid var(--border); border-radius: 6px;
-      color: var(--muted2); width: 24px; height: 24px; cursor: pointer;
-      font-size: 0.72rem; display: flex; align-items: center; justify-content: center;
-      transition: all .15s;
-    }
+    .btn-xs { background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--muted2); width: 24px; height: 24px; cursor: pointer; font-size: .72rem; display: flex; align-items: center; justify-content: center; transition: all .15s; }
     .btn-xs:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
     .btn-xs.del:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
-
-    /* Category edit mode */
     .cat-edit { display: none; margin-bottom: 5px; }
     .cat-edit.open { display: flex; align-items: center; gap: 5px; }
     .input-icon { width: 38px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 4px; font-size: 1rem; text-align: center; outline: none; font-family: inherit; }
     .input-icon:focus { border-color: var(--accent); }
-    .input-name { flex: 1; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 0.83rem; font-family: inherit; color: var(--text); outline: none; }
+    .input-name { flex: 1; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: .83rem; font-family: inherit; color: var(--text); outline: none; }
     .input-name:focus { border-color: var(--accent); }
-    .btn-ok { background: var(--green); border: none; border-radius: 8px; color: #fff; width: 30px; height: 30px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .btn-ok:hover { opacity: .85; }
+    .btn-ok { background: var(--green); border: none; border-radius: 8px; color: #fff; width: 30px; height: 30px; cursor: pointer; font-size: .85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-    /* Add category button */
-    .btn-add-cat {
-      width: 100%; padding: 9px; margin-top: 4px;
-      background: var(--surface2); border: 1.5px dashed var(--border);
-      border-radius: 10px; color: var(--muted); font-size: 0.83rem;
-      font-family: inherit; cursor: pointer; transition: all .15s;
+    /* profit auto-calc box */
+    .profit-box {
+      margin-top: 16px; padding: 13px 15px; border-radius: 12px;
+      border: 1.5px solid;
     }
-    .btn-add-cat:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+    .profit-box.personal { background: linear-gradient(135deg,#ede9ff,#ddd8ff); border-color: #c4bfff; }
+    .profit-box.biz      { background: linear-gradient(135deg,#d1faeb,#a7f3d0); border-color: #6ee7b7; }
+    .profit-box-label { font-size: .7rem; font-weight: 700; margin-bottom: 4px; letter-spacing: .04em; }
+    .profit-box.personal .profit-box-label { color: var(--accent); }
+    .profit-box.biz      .profit-box-label { color: #059669; }
+    .profit-box-row { display: flex; align-items: baseline; justify-content: space-between; }
+    .profit-val { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+    .profit-val.personal-c { color: var(--accent); }
+    .profit-val.biz-c      { color: #059669; }
+    .profit-val.negative   { color: var(--red); }
+    .profit-pct { font-size: .78rem; font-weight: 600; opacity: .7; }
+    .profit-formula { font-size: .68rem; opacity: .6; margin-top: 2px; }
 
-    /* Savings auto-calc */
-    .savings-auto {
-      margin-top: 16px; padding: 13px 15px;
-      background: linear-gradient(135deg, #ede9ff 0%, #ddd8ff 100%);
-      border: 1.5px solid #c4bfff; border-radius: 12px;
-    }
-    .savings-auto-label { font-size: 0.7rem; font-weight: 700; color: var(--accent); margin-bottom: 4px; letter-spacing: .04em; }
-    .savings-auto-row { display: flex; align-items: baseline; justify-content: space-between; }
-    .savings-auto-val { font-size: 1.25rem; font-weight: 700; color: var(--accent); letter-spacing: -0.02em; }
-    .savings-auto-val.negative { color: var(--red); }
-    .savings-auto-pct { font-size: 0.78rem; font-weight: 600; color: var(--accent); opacity: .7; }
-    .savings-formula { font-size: 0.68rem; color: var(--accent); opacity: .6; margin-top: 2px; }
-
-    /* Save button */
-    .btn-save {
-      width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 12px;
-      color: #fff; font-size: 0.92rem; font-weight: 700; font-family: inherit; cursor: pointer;
-      margin-top: 16px; transition: background .15s, transform .1s, box-shadow .15s;
-      box-shadow: 0 2px 8px rgba(91,81,240,.3);
-    }
-    .btn-save:hover { background: #4a42d6; box-shadow: 0 4px 16px rgba(91,81,240,.35); }
+    .btn-save { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 12px; color: #fff; font-size: .92rem; font-weight: 700; font-family: inherit; cursor: pointer; margin-top: 16px; transition: background .15s, transform .1s, box-shadow .15s; box-shadow: 0 2px 8px rgba(91,81,240,.3); }
+    .btn-save:hover { background: #4a42d6; }
     .btn-save:active { transform: scale(.98); }
+    .btn-save.biz { background: #059669; box-shadow: 0 2px 8px rgba(5,150,105,.3); }
+    .btn-save.biz:hover { background: #047857; }
 
-    /* Share */
     .share-box { margin-top: 16px; padding: 13px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; }
-    .share-box h3 { font-size: 0.7rem; font-weight: 700; color: var(--muted); margin-bottom: 7px; }
+    .share-box h3 { font-size: .7rem; font-weight: 700; color: var(--muted); margin-bottom: 7px; }
     .share-url { display: flex; gap: 6px; }
-    .share-url input { flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 7px 9px; font-size: 0.68rem; font-family: monospace; outline: none; }
-    .btn-copy { background: var(--accent); border: none; border-radius: 8px; color: #fff; padding: 7px 11px; font-size: 0.73rem; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; transition: background .15s; }
-    .btn-copy:hover { background: #4a42d6; }
+    .share-url input { flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 7px 9px; font-size: .68rem; font-family: monospace; outline: none; }
+    .btn-copy { background: var(--accent); border: none; border-radius: 8px; color: #fff; padding: 7px 11px; font-size: .73rem; font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; }
+    .btn-copy:hover { opacity: .85; }
     .btn-copy.copied { background: var(--green); }
 
-    /* MAIN */
+    /* ── MAIN ── */
     main { padding: 24px 28px; overflow-y: auto; }
-
-    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+    .cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 22px; }
     .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
     .card-icon-wrap { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 12px; }
-    .card.income .card-icon-wrap { background: var(--green-light); }
-    .card.expense .card-icon-wrap { background: var(--red-light); }
-    .card.savings .card-icon-wrap { background: var(--accent-light); }
-    .card.free .card-icon-wrap { background: var(--yellow-light); }
-    .card-label { font-size: 0.7rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
-    .card-value { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; }
-    .card-value.green { color: var(--green); }
-    .card-value.red { color: var(--red); }
-    .card-value.accent { color: var(--accent); }
-    .card-value.yellow { color: var(--yellow); }
-    .card-sub { font-size: 0.7rem; color: var(--muted2); margin-top: 3px; }
+    .card.c-income .card-icon-wrap  { background: var(--green-light); }
+    .card.c-expense .card-icon-wrap { background: var(--red-light); }
+    .card.c-profit .card-icon-wrap  { background: var(--accent-light); }
+    .card.c-profit.biz .card-icon-wrap { background: #d1faeb; }
+    .card.c-rate .card-icon-wrap    { background: var(--yellow-light); }
+    .card-label { font-size: .7rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+    .card-value { font-size: 1.32rem; font-weight: 700; letter-spacing: -.03em; line-height: 1.2; }
+    .v-green { color: var(--green); } .v-red { color: var(--red); } .v-accent { color: var(--accent); } .v-biz { color: #059669; } .v-yellow { color: var(--yellow); }
+    .card-sub { font-size: .7rem; color: var(--muted2); margin-top: 3px; }
     .card-progress { margin-top: 8px; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
-    .card-progress-fill { height: 100%; border-radius: 2px; transition: width .6s ease; }
+    .card-progress-fill { height: 100%; border-radius: 2px; transition: width .6s; }
 
     .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
     .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
-    .chart-card h3 { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 18px; }
+    .chart-card h3 { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 18px; }
     .chart-wrap { position: relative; height: 210px; }
 
     .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); margin-bottom: 18px; }
-    .table-card h3 { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 16px; }
+    .table-card h3 { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 16px; }
     table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; font-size: 0.68rem; font-weight: 700; color: var(--muted2); padding: 0 12px 10px; border-bottom: 1.5px solid var(--border); }
+    th { text-align: left; font-size: .68rem; font-weight: 700; color: var(--muted2); padding: 0 12px 10px; border-bottom: 1.5px solid var(--border); }
     th:not(:first-child) { text-align: right; }
-    td { padding: 10px 12px; font-size: 0.86rem; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 12px; font-size: .86rem; border-bottom: 1px solid var(--border); }
     td:not(:first-child) { text-align: right; }
     tr:last-child td { border-bottom: none; }
+    tr.total-row td { background: var(--surface2); font-weight: 700; }
     tr:not(.total-row):hover td { background: var(--surface2); }
-    .total-row td { background: var(--surface2); font-weight: 700; }
     .cat-chip { display: flex; align-items: center; gap: 8px; }
     .cat-badge { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: .85rem; flex-shrink: 0; }
     .ratio-bar-wrap { display: flex; align-items: center; gap: 7px; justify-content: flex-end; }
     .ratio-bar { height: 6px; border-radius: 3px; min-width: 3px; }
-    .ratio-text { font-size: 0.78rem; color: var(--muted); width: 40px; text-align: right; }
+    .ratio-text { font-size: .78rem; color: var(--muted); width: 40px; text-align: right; }
 
     .history-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
-    .history-card h3 { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 18px; }
+    .history-card h3 { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 18px; }
     .chart-wrap-wide { position: relative; height: 170px; }
 
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text); color: #fff; padding: 10px 22px; border-radius: 50px; font-size: 0.83rem; font-weight: 600; opacity: 0; transition: opacity .25s; pointer-events: none; z-index: 999; box-shadow: var(--shadow-md); }
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text); color: #fff; padding: 10px 22px; border-radius: 50px; font-size: .83rem; font-weight: 600; opacity: 0; transition: opacity .25s; pointer-events: none; z-index: 999; box-shadow: 0 4px 16px rgba(0,0,0,.12); }
     .toast.show { opacity: 1; }
     .empty { text-align: center; padding: 80px 20px; color: var(--muted); }
     .empty-icon { font-size: 3rem; margin-bottom: 14px; }
     .empty h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-    .empty p { font-size: 0.84rem; line-height: 1.7; }
+    .empty p { font-size: .84rem; line-height: 1.7; }
 
-    @media (max-width: 1100px) {
-      .layout { grid-template-columns: 1fr; }
-      aside { border-right: none; border-bottom: 1px solid var(--border); }
-      .cards { grid-template-columns: repeat(2, 1fr); }
-      .charts { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 600px) {
-      header { padding: 0 16px; }
-      main { padding: 16px; }
-      aside { padding: 18px 14px; }
-      .cards { grid-template-columns: 1fr 1fr; }
-    }
+    @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } aside { border-right: none; border-bottom: 1px solid var(--border); } .cards { grid-template-columns: repeat(2,1fr); } .charts { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { header { padding: 0 14px; } main { padding: 16px; } aside { padding: 18px 14px; } .cards { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="logo"><div class="logo-icon">💰</div>개인 채산표</div>
-  <div class="user-pill"><span class="user-dot"></span><span id="userId-display">로딩 중...</span></div>
+  <div class="logo"><div class="logo-icon">💰</div>채산표</div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="personal" onclick="switchTab('personal')">👤 개인용</button>
+    <button class="tab-btn" data-tab="biz" onclick="switchTab('biz')">🏢 사업자용</button>
+  </div>
+  <div class="user-pill"><span class="user-dot"></span><span id="userId-display">...</span></div>
 </header>
 
 <div class="layout">
   <aside>
-    <!-- Month -->
     <div class="sec-label">월 선택</div>
     <div class="month-row">
       <select id="monthSelect"></select>
-      <button class="btn-icon" onclick="addMonth()" title="이전 달 추가">＋</button>
+      <button class="btn-icon" onclick="addMonth()">＋</button>
     </div>
 
-    <!-- Salary -->
-    <div class="sec-label">수입</div>
-    <div class="salary-field">
-      <label><span style="width:7px;height:7px;border-radius:2px;background:var(--green);display:inline-block;margin-right:3px"></span>월 급여</label>
+    <div class="sec-label" id="income-sec-label">수입</div>
+    <div class="income-field">
+      <label>
+        <span style="width:7px;height:7px;border-radius:2px;background:var(--green);display:inline-block;margin-right:3px"></span>
+        <span id="income-label">월 급여</span>
+      </label>
       <div class="field-row">
-        <span class="field-icon">💼</span>
-        <input type="number" id="salary" placeholder="3,000,000" oninput="updateSavings()" />
+        <span class="field-icon" id="income-icon">💼</span>
+        <input type="number" id="income" placeholder="3,000,000" oninput="updateProfit()" />
         <span class="field-unit">원</span>
       </div>
     </div>
 
-    <!-- Category list -->
-    <div class="divider"><span>지출 항목</span></div>
+    <div class="divider"><span id="expense-divider-label">지출 항목</span></div>
     <div id="cat-list"></div>
-    <!-- Auto savings -->
-    <div class="savings-auto" id="savings-box">
-      <div class="savings-auto-label">📈 저축 및 투자 (자동 계산)</div>
-      <div class="savings-auto-row">
-        <span class="savings-auto-val" id="savings-val">— 원</span>
-        <span class="savings-auto-pct" id="savings-pct"></span>
+
+    <div class="profit-box personal" id="profit-box">
+      <div class="profit-box-label" id="profit-box-label">📈 저축 및 투자 (자동 계산)</div>
+      <div class="profit-box-row">
+        <span class="profit-val personal-c" id="profit-val">— 원</span>
+        <span class="profit-pct" id="profit-pct"></span>
       </div>
-      <div class="savings-formula" id="savings-formula">급여 − 지출 합계</div>
+      <div class="profit-formula" id="profit-formula">급여 − 지출 합계</div>
     </div>
 
-    <button class="btn-save" onclick="saveData()">저장하기</button>
+    <button class="btn-save" id="btn-save" onclick="saveData()">저장하기</button>
 
     <div class="share-box">
-      <h3>🔗 내 채산표 공유 링크</h3>
+      <h3>🔗 공유 링크</h3>
       <div class="share-url">
         <input type="text" id="shareUrl" readonly />
         <button class="btn-copy" id="copyBtn" onclick="copyLink()">복사</button>
@@ -258,18 +228,14 @@
   </aside>
 
   <main id="dashboard">
-    <div class="empty">
-      <div class="empty-icon">📊</div>
-      <h3>데이터를 입력해 주세요</h3>
-      <p>왼쪽 폼에서 수입과 지출을 입력하고<br />저장하면 대시보드가 표시됩니다.</p>
-    </div>
+    <div class="empty"><div class="empty-icon">📊</div><h3>데이터를 입력해 주세요</h3><p>왼쪽 폼에서 수입과 지출을 입력하고 저장하면 대시보드가 표시됩니다.</p></div>
   </main>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── USER ──────────────────────────────────────────────────
+// ── USER ─────────────────────────────────────────────────────────
 function getUserId() {
   const p = new URLSearchParams(window.location.search);
   let uid = p.get('user');
@@ -285,13 +251,46 @@ const UID = getUserId();
 document.getElementById('userId-display').textContent = UID.slice(0,8)+'...';
 document.getElementById('shareUrl').value = window.location.href;
 
-// ── CATEGORIES ────────────────────────────────────────────
-const PALETTE = ['#f04438','#f79009','#2e90fa','#ee46bc','#7a5af8','#5b51f0','#06b6d4','#84cc16','#ec4899'];
-const BG_MAP = {'#f04438':'#fef3f2','#f79009':'#fef6e7','#2e90fa':'#eff8ff','#ee46bc':'#fdf2fa','#7a5af8':'#f4f3ff','#5b51f0':'#ede9ff','#06b6d4':'#ecfeff','#84cc16':'#f7fee7','#ec4899':'#fdf2fa'};
+// ── TAB ──────────────────────────────────────────────────────────
+let currentTab = localStorage.getItem(`tab_${UID}`) || 'personal';
 
-function getBg(color) { return BG_MAP[color] || '#f5f5ff'; }
+function switchTab(tab) {
+  currentTab = tab;
+  localStorage.setItem(`tab_${UID}`, tab);
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  updateSidebarLabels();
+  buildMonthList();
+  const m = document.getElementById('monthSelect').value;
+  loadForm(m);
+  renderDashboard(m);
+}
 
-function defaultCats() {
+function updateSidebarLabels() {
+  const isBiz = currentTab === 'biz';
+  document.getElementById('income-sec-label').textContent = isBiz ? '매출' : '수입';
+  document.getElementById('income-label').textContent     = isBiz ? '월 매출' : '월 급여';
+  document.getElementById('income-icon').textContent      = isBiz ? '💹' : '💼';
+  document.getElementById('income').placeholder           = isBiz ? '50,000,000' : '3,000,000';
+  document.getElementById('expense-divider-label').textContent = isBiz ? '비용 항목' : '지출 항목';
+
+  const box = document.getElementById('profit-box');
+  box.className = `profit-box ${isBiz ? 'biz' : 'personal'}`;
+  document.getElementById('profit-box-label').textContent = isBiz ? '📊 영업이익 (자동 계산)' : '📈 저축 및 투자 (자동 계산)';
+  document.getElementById('profit-formula').textContent   = isBiz ? '매출 − 비용 합계' : '급여 − 지출 합계';
+
+  const valEl = document.getElementById('profit-val');
+  valEl.className = `profit-val ${isBiz ? 'biz-c' : 'personal-c'}`;
+
+  const saveBtn = document.getElementById('btn-save');
+  saveBtn.className = isBiz ? 'btn-save biz' : 'btn-save';
+}
+
+// ── CATEGORIES ───────────────────────────────────────────────────
+const PALETTE = ['#f04438','#f79009','#2e90fa','#ee46bc','#7a5af8','#5b51f0','#06b6d4','#84cc16'];
+const BG_MAP  = {'#f04438':'#fef3f2','#f79009':'#fef6e7','#2e90fa':'#eff8ff','#ee46bc':'#fdf2fa','#7a5af8':'#f4f3ff','#5b51f0':'#ede9ff','#06b6d4':'#ecfeff','#84cc16':'#f7fee7'};
+function getBg(c) { return BG_MAP[c] || '#f5f5ff'; }
+
+function defaultPersonalCats() {
   return [
     { id:'food',      label:'식비',       icon:'🍽', color:'#f04438' },
     { id:'housing',   label:'주거비',     icon:'🏠', color:'#f79009' },
@@ -301,25 +300,41 @@ function defaultCats() {
     { id:'loan',      label:'대출 상환', icon:'🏦', color:'#5b51f0' },
   ];
 }
+function defaultBizCats() {
+  return [
+    { id:'cogs',      label:'매출원가 (식자재)',           icon:'🥬', color:'#f04438' },
+    { id:'rent',      label:'임대료',                      icon:'🏢', color:'#f79009' },
+    { id:'labor',     label:'인건비',                      icon:'👥', color:'#2e90fa' },
+    { id:'insurance', label:'사대보험 / 퇴직금',          icon:'🛡', color:'#ee46bc' },
+    { id:'utility',   label:'관리비 (전기·수도·CCTV 등)', icon:'⚡', color:'#7a5af8' },
+    { id:'ops',       label:'운영비 (광고·복리·차량 등)', icon:'📢', color:'#5b51f0' },
+    { id:'misc',      label:'기타',                        icon:'📦', color:'#06b6d4' },
+  ];
+}
+
+function catKey()  { return currentTab === 'biz' ? `biz_${UID}_cats` : `채산표_${UID}_cats`; }
+function dataKey(m){ return currentTab === 'biz' ? `biz_${UID}_${m}` : `채산표_${UID}_${m}`; }
 
 function getCats() {
-  const s = localStorage.getItem(`채산표_${UID}_cats`);
-  return s ? JSON.parse(s) : defaultCats();
+  const s = localStorage.getItem(catKey());
+  if (s) return JSON.parse(s);
+  return currentTab === 'biz' ? defaultBizCats() : defaultPersonalCats();
 }
-function saveCats(cats) { localStorage.setItem(`채산표_${UID}_cats`, JSON.stringify(cats)); }
+function saveCats(cats) { localStorage.setItem(catKey(), JSON.stringify(cats)); }
 
-// ── MONTH DATA ────────────────────────────────────────────
-function getData(m) { const s = localStorage.getItem(`채산표_${UID}_${m}`); return s ? JSON.parse(s) : null; }
-function setData(m, d) { localStorage.setItem(`채산표_${UID}_${m}`, JSON.stringify(d)); }
+// ── MONTH DATA ───────────────────────────────────────────────────
+function getData(m)    { const s = localStorage.getItem(dataKey(m)); return s ? JSON.parse(s) : null; }
+function setData(m, d) { localStorage.setItem(dataKey(m), JSON.stringify(d)); }
 function allMonths() {
+  const prefix = currentTab === 'biz' ? `biz_${UID}_` : `채산표_${UID}_`;
   return Object.keys(localStorage)
-    .filter(k => k.startsWith(`채산표_${UID}_`) && !k.endsWith('_cats'))
-    .map(k => k.replace(`채산표_${UID}_`, ''))
+    .filter(k => k.startsWith(prefix) && !k.endsWith('_cats'))
+    .map(k => k.replace(prefix, ''))
     .filter(k => /^\d{4}-\d{2}$/.test(k))
     .sort();
 }
 
-// ── MONTH SELECT ──────────────────────────────────────────
+// ── MONTH SELECT ─────────────────────────────────────────────────
 function currentYM() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
 function buildMonthList() {
   const sel = document.getElementById('monthSelect');
@@ -329,7 +344,7 @@ function buildMonthList() {
   all.forEach(m => {
     const [y,mo] = m.split('-');
     const o = document.createElement('option');
-    o.value=m; o.textContent=`${y}년 ${parseInt(mo)}월`;
+    o.value = m; o.textContent = `${y}년 ${parseInt(mo)}월`;
     sel.appendChild(o);
   });
   sel.value = (prev && all.includes(prev)) ? prev : all[0];
@@ -338,14 +353,14 @@ function addMonth() {
   const cur = document.getElementById('monthSelect').value;
   const d = new Date(cur+'-01'); d.setMonth(d.getMonth()-1);
   const nm = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-  if (!allMonths().includes(nm)) setData(nm, {salary:0});
+  if (!allMonths().includes(nm)) setData(nm, {income:0});
   buildMonthList();
   document.getElementById('monthSelect').value = nm;
   loadForm(nm); renderDashboard(nm);
 }
 document.getElementById('monthSelect').addEventListener('change', e => { loadForm(e.target.value); renderDashboard(e.target.value); });
 
-// ── CATEGORY RENDER ───────────────────────────────────────
+// ── CATEGORY RENDER ──────────────────────────────────────────────
 function renderCatList(monthData) {
   const cats = getCats();
   const container = document.getElementById('cat-list');
@@ -353,8 +368,7 @@ function renderCatList(monthData) {
   cats.forEach(cat => {
     const amt = monthData ? (monthData[cat.id]||0) : 0;
     const el = document.createElement('div');
-    el.className = 'cat-item';
-    el.id = `ci_${cat.id}`;
+    el.className = 'cat-item'; el.id = `ci_${cat.id}`;
     el.innerHTML = `
       <div class="cat-view">
         <div class="cat-view-label">
@@ -363,8 +377,8 @@ function renderCatList(monthData) {
           <span id="cn_${cat.id}">${cat.label}</span>
         </div>
         <div class="cat-actions">
-          <button class="btn-xs" onclick="toggleEdit('${cat.id}')" title="이름 수정">✏</button>
-          <button class="btn-xs del" onclick="deleteCat('${cat.id}')" title="삭제">✕</button>
+          <button class="btn-xs" onclick="toggleEdit('${cat.id}')">✏</button>
+          <button class="btn-xs del" onclick="deleteCat('${cat.id}')">✕</button>
         </div>
       </div>
       <div class="cat-edit" id="ce_${cat.id}">
@@ -374,10 +388,9 @@ function renderCatList(monthData) {
       </div>
       <div class="field-row">
         <span class="field-icon">${cat.icon}</span>
-        <input type="number" id="amt_${cat.id}" value="${amt||''}" placeholder="0" oninput="updateSavings()" />
+        <input type="number" id="amt_${cat.id}" value="${amt||''}" placeholder="0" oninput="updateProfit()" />
         <span class="field-unit">원</span>
-      </div>
-    `;
+      </div>`;
     container.appendChild(el);
   });
 }
@@ -387,86 +400,62 @@ function toggleEdit(id) {
   el.classList.toggle('open');
   if (el.classList.contains('open')) document.getElementById(`en_${id}`).focus();
 }
-
 function saveCatEdit(id) {
-  const newIcon = document.getElementById(`ei_${id}`).value.trim() || '📌';
-  const newName = document.getElementById(`en_${id}`).value.trim() || '항목';
-  const cats = getCats();
-  const cat = cats.find(c=>c.id===id);
-  if (cat) { cat.icon = newIcon; cat.label = newName; }
+  const icon = document.getElementById(`ei_${id}`).value.trim() || '📌';
+  const name = document.getElementById(`en_${id}`).value.trim() || '항목';
+  const cats = getCats(); const cat = cats.find(c=>c.id===id);
+  if (cat) { cat.icon = icon; cat.label = name; }
   saveCats(cats);
   document.getElementById(`ce_${id}`).classList.remove('open');
-  // update view without full re-render
-  document.getElementById(`cn_${id}`).textContent = newName;
-  document.querySelector(`#ci_${id} .field-icon`).textContent = newIcon;
+  document.getElementById(`cn_${id}`).textContent = name;
+  document.querySelector(`#ci_${id} .field-icon`).textContent = icon;
 }
-
 function deleteCat(id) {
   if (!confirm('이 항목을 삭제할까요?')) return;
-  const cats = getCats().filter(c=>c.id!==id);
-  saveCats(cats);
+  saveCats(getCats().filter(c=>c.id!==id));
   const m = document.getElementById('monthSelect').value;
-  renderCatList(getData(m));
-  updateSavings();
+  renderCatList(getData(m)); updateProfit();
 }
 
-function addCategory() {
-  const cats = getCats();
-  const newId = 'cat_'+Date.now();
-  const color = PALETTE[cats.length % PALETTE.length];
-  cats.push({ id: newId, label: '새 항목', icon: '📌', color });
-  saveCats(cats);
-  const m = document.getElementById('monthSelect').value;
-  renderCatList(getData(m));
-  // Auto-open edit mode for the new item
-  setTimeout(() => toggleEdit(newId), 50);
+// ── PROFIT AUTO-CALC ─────────────────────────────────────────────
+const FMT = new Intl.NumberFormat('ko-KR');
+function updateProfit() {
+  const income = parseFloat(document.getElementById('income').value)||0;
+  const cats   = getCats();
+  const total  = cats.reduce((s,c)=>s+(parseFloat(document.getElementById(`amt_${c.id}`)?.value)||0), 0);
+  const profit = income - total;
+  const pct    = income > 0 ? profit/income*100 : 0;
+  const isBiz  = currentTab === 'biz';
+
+  const valEl = document.getElementById('profit-val');
+  valEl.textContent = (profit<0?'-':'')+FMT.format(Math.abs(profit))+' 원';
+  valEl.className   = `profit-val ${profit<0 ? 'negative' : (isBiz ? 'biz-c' : 'personal-c')}`;
+  document.getElementById('profit-pct').textContent     = pct.toFixed(1)+'%';
+  document.getElementById('profit-formula').textContent = `${FMT.format(income)} − ${FMT.format(total)}`;
 }
 
-// ── SAVINGS AUTO-CALC ─────────────────────────────────────
-function updateSavings() {
-  const salary = parseFloat(document.getElementById('salary').value)||0;
-  const cats = getCats();
-  const totalExp = cats.reduce((s,c) => s+(parseFloat(document.getElementById(`amt_${c.id}`)?.value)||0), 0);
-  const sav = salary - totalExp;
-  const pct = salary>0 ? (sav/salary*100) : 0;
-
-  const valEl = document.getElementById('savings-val');
-  const pctEl = document.getElementById('savings-pct');
-  const fmEl  = document.getElementById('savings-formula');
-  const FMT = new Intl.NumberFormat('ko-KR');
-
-  valEl.textContent = (sav<0?'-':'')+FMT.format(Math.abs(sav))+' 원';
-  valEl.className = 'savings-auto-val'+(sav<0?' negative':'');
-  pctEl.textContent = pct.toFixed(1)+'%';
-  fmEl.textContent  = `${FMT.format(salary)} − ${FMT.format(totalExp)}`;
-}
-
-// ── FORM LOAD / SAVE ──────────────────────────────────────
+// ── FORM ─────────────────────────────────────────────────────────
 function loadForm(m) {
   const data = getData(m);
-  document.getElementById('salary').value = data?.salary||'';
+  document.getElementById('income').value = data?.income || '';
   renderCatList(data);
-  updateSavings();
+  updateProfit();
 }
-
 function saveData() {
-  const m = document.getElementById('monthSelect').value;
+  const m    = document.getElementById('monthSelect').value;
   const cats = getCats();
-  const salary = parseFloat(document.getElementById('salary').value)||0;
-  const totalExp = cats.reduce((s,c) => s+(parseFloat(document.getElementById(`amt_${c.id}`)?.value)||0), 0);
-  const d = { salary };
+  const inc  = parseFloat(document.getElementById('income').value)||0;
+  const total= cats.reduce((s,c)=>s+(parseFloat(document.getElementById(`amt_${c.id}`)?.value)||0), 0);
+  const d    = { income: inc };
   cats.forEach(c => { d[c.id] = parseFloat(document.getElementById(`amt_${c.id}`)?.value)||0; });
-  d._savings = salary - totalExp;
+  d._profit  = inc - total;
   setData(m, d);
-  buildMonthList();
-  renderDashboard(m);
+  buildMonthList(); renderDashboard(m);
   showToast('저장되었습니다 ✓');
 }
 
-// ── DASHBOARD ─────────────────────────────────────────────
-const FMT = new Intl.NumberFormat('ko-KR');
+// ── DASHBOARD ────────────────────────────────────────────────────
 let donutChart=null, barChart=null, histChart=null;
-
 function toWon(n) {
   if(n>=100000000) return (n/100000000).toFixed(1)+'억';
   if(n>=10000) return Math.round(n/10000)+'만';
@@ -476,57 +465,65 @@ function toWon(n) {
 function renderDashboard(m) {
   const data = getData(m);
   const main = document.getElementById('dashboard');
-  if (!data || !data.salary) {
+  if (!data || !data.income) {
     main.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><h3>데이터가 없습니다</h3><p>왼쪽 폼에서 데이터를 입력하고 저장하세요.</p></div>`;
-    [donutChart,barChart,histChart].forEach(c=>{if(c)c.destroy()});
+    [donutChart,barChart,histChart].forEach(c=>{if(c)c.destroy();});
     donutChart=barChart=histChart=null; return;
   }
 
-  const cats = getCats();
-  const salary = data.salary||0;
-  const expenses = cats.reduce((s,c)=>s+(data[c.id]||0),0);
-  const sav = data._savings ?? (salary-expenses);
-  const savRatio = salary>0 ? sav/salary*100 : 0;
-  const expRatio = salary>0 ? expenses/salary*100 : 0;
+  const isBiz  = currentTab === 'biz';
+  const cats   = getCats();
+  const income = data.income||0;
+  const costs  = cats.reduce((s,c)=>s+(data[c.id]||0), 0);
+  const profit = data._profit ?? (income - costs);
+  const profitRatio = income > 0 ? profit/income*100 : 0;
+  const costRatio   = income > 0 ? costs/income*100 : 0;
+
+  const profitColor = isBiz ? '#059669' : 'var(--accent)';
+  const profitClass = isBiz ? 'v-biz' : 'v-accent';
+  const profitLabel = isBiz ? '영업이익' : '저축·투자';
+  const ratioLabel  = isBiz ? '영업이익률' : '잔여 (잉여금)';
+  const incomeLabel = isBiz ? '월 매출' : '월 수입';
+  const costLabel   = isBiz ? '총 비용' : '총 지출';
 
   main.innerHTML = `
     <div class="cards">
-      <div class="card income">
-        <div class="card-icon-wrap">💼</div>
-        <div class="card-label">월 수입</div>
-        <div class="card-value green">${FMT.format(salary)}<small style="font-size:.68rem;font-weight:500;color:var(--muted)"> 원</small></div>
+      <div class="card c-income">
+        <div class="card-icon-wrap">${isBiz?'💹':'💼'}</div>
+        <div class="card-label">${incomeLabel}</div>
+        <div class="card-value v-green">${FMT.format(income)}<small style="font-size:.68rem;font-weight:500;color:var(--muted)"> 원</small></div>
       </div>
-      <div class="card expense">
+      <div class="card c-expense">
         <div class="card-icon-wrap">💸</div>
-        <div class="card-label">총 지출</div>
-        <div class="card-value red">${FMT.format(expenses)}<small style="font-size:.68rem;font-weight:500;color:var(--muted)"> 원</small></div>
-        <div class="card-sub">수입의 ${expRatio.toFixed(1)}%</div>
-        <div class="card-progress"><div class="card-progress-fill" style="background:var(--red);width:${Math.min(expRatio,100)}%"></div></div>
+        <div class="card-label">${costLabel}</div>
+        <div class="card-value v-red">${FMT.format(costs)}<small style="font-size:.68rem;font-weight:500;color:var(--muted)"> 원</small></div>
+        <div class="card-sub">${isBiz?'매출':'수입'}의 ${costRatio.toFixed(1)}%</div>
+        <div class="card-progress"><div class="card-progress-fill" style="background:var(--red);width:${Math.min(costRatio,100)}%"></div></div>
       </div>
-      <div class="card savings">
-        <div class="card-icon-wrap">📈</div>
-        <div class="card-label">저축·투자</div>
-        <div class="card-value ${sav>=0?'accent':'red'}">${sav<0?'-':''}${FMT.format(Math.abs(sav))}<small style="font-size:.68rem;font-weight:500;color:var(--muted)"> 원</small></div>
-        <div class="card-sub">저축률 ${savRatio.toFixed(1)}%</div>
-        <div class="card-progress"><div class="card-progress-fill" style="background:var(--accent);width:${Math.min(Math.max(savRatio,0),100)}%"></div></div>
+      <div class="card c-profit ${isBiz?'biz':''}">
+        <div class="card-icon-wrap">${isBiz?'📊':'📈'}</div>
+        <div class="card-label">${profitLabel}</div>
+        <div class="card-value ${profit>=0?profitClass:'v-red'}">${profit<0?'-':''}${FMT.format(Math.abs(profit))}<small style="font-size:.68rem;font-weight:500;color:var(--muted)"> 원</small></div>
+        <div class="card-sub">${isBiz?'영업이익률':'저축률'} ${profitRatio.toFixed(1)}%</div>
+        <div class="card-progress"><div class="card-progress-fill" style="background:${profitColor};width:${Math.min(Math.max(profitRatio,0),100)}%"></div></div>
       </div>
-      <div class="card free">
-        <div class="card-icon-wrap">${sav>=0?'✨':'⚠️'}</div>
-        <div class="card-label">잔여 (잉여금)</div>
-        <div class="card-value ${sav>=0?'yellow':'red'}">${sav<0?'-':''}${FMT.format(Math.abs(sav))}<small style="font-size:.68rem;font-weight:500;color:var(--muted)"> 원</small></div>
-        <div class="card-sub">${sav<0?'적자 상태':'여유 있음'}</div>
+      <div class="card c-rate">
+        <div class="card-icon-wrap">${profit>=0?'✨':'⚠️'}</div>
+        <div class="card-label">${isBiz?'손익 상태':'잔여 (잉여금)'}</div>
+        <div class="card-value ${profit>=0?'v-yellow':'v-red'}">${profit<0?'-':''}${FMT.format(Math.abs(profit))}<small style="font-size:.68rem;font-weight:500;color:var(--muted)"> 원</small></div>
+        <div class="card-sub">${profit<0?(isBiz?'적자':'적자 상태'):(isBiz?'흑자':'여유 있음')}</div>
       </div>
     </div>
 
     <div class="charts">
-      <div class="chart-card"><h3>지출 구성 비율</h3><div class="chart-wrap"><canvas id="donutChart"></canvas></div></div>
-      <div class="chart-card"><h3>항목별 지출 금액</h3><div class="chart-wrap"><canvas id="barChart"></canvas></div></div>
+      <div class="chart-card"><h3>${isBiz?'비용 구성':'지출 구성'} 비율</h3><div class="chart-wrap"><canvas id="donutChart"></canvas></div></div>
+      <div class="chart-card"><h3>항목별 ${isBiz?'비용':'지출'} 금액</h3><div class="chart-wrap"><canvas id="barChart"></canvas></div></div>
     </div>
 
     <div class="table-card">
       <h3>항목별 상세 분석</h3>
       <table>
-        <thead><tr><th>항목</th><th>금액</th><th>수입 대비</th><th>지출 대비</th></tr></thead>
+        <thead><tr><th>항목</th><th>금액</th><th>${isBiz?'매출':'수입'} 대비</th><th>${isBiz?'비용':'지출'} 대비</th></tr></thead>
         <tbody id="tBody"></tbody>
       </table>
     </div>
@@ -534,80 +531,83 @@ function renderDashboard(m) {
     <div class="history-card"><h3>월별 추이</h3><div class="chart-wrap-wide"><canvas id="histChart"></canvas></div></div>
   `;
 
-  const colors = cats.map((c,i)=>c.color);
-  const tbody = document.getElementById('tBody');
-  cats.forEach((cat,i) => {
+  // Table
+  const tbody  = document.getElementById('tBody');
+  const colors = cats.map(c=>c.color);
+  cats.forEach(cat => {
     const amt = data[cat.id]||0;
-    const ri = salary>0 ? amt/salary*100 : 0;
-    const re = expenses>0 ? amt/expenses*100 : 0;
-    const bw = Math.min(ri*2.5,110);
+    const ri  = income>0 ? amt/income*100 : 0;
+    const rc  = costs>0  ? amt/costs*100  : 0;
+    const bw  = Math.min(ri*2.5, 110);
     tbody.innerHTML += `<tr>
       <td><div class="cat-chip"><div class="cat-badge" style="background:${getBg(cat.color)}">${cat.icon}</div><span style="font-weight:500">${cat.label}</span></div></td>
       <td><strong>${FMT.format(amt)}</strong> 원</td>
       <td><div class="ratio-bar-wrap"><div class="ratio-bar" style="background:${cat.color};width:${bw}px"></div><span class="ratio-text">${ri.toFixed(1)}%</span></div></td>
-      <td style="color:var(--muted)">${re.toFixed(1)}%</td>
+      <td style="color:var(--muted)">${rc.toFixed(1)}%</td>
     </tr>`;
   });
-  // savings row
+  // profit row
+  const pr = Math.max(profit,0); const prRatio = income>0?pr/income*100:0;
   tbody.innerHTML += `<tr>
-    <td><div class="cat-chip"><div class="cat-badge" style="background:var(--accent-light)">📈</div><span style="font-weight:500">저축·투자</span></div></td>
-    <td><strong style="color:var(--accent)">${FMT.format(Math.max(sav,0))}</strong> 원</td>
-    <td><div class="ratio-bar-wrap"><div class="ratio-bar" style="background:var(--accent);width:${Math.min(Math.max(savRatio,0)*2.5,110)}px"></div><span class="ratio-text">${Math.max(savRatio,0).toFixed(1)}%</span></div></td>
+    <td><div class="cat-chip"><div class="cat-badge" style="background:${isBiz?'#d1faeb':'var(--accent-light)'}">${isBiz?'📊':'📈'}</div><span style="font-weight:500">${profitLabel}</span></div></td>
+    <td><strong style="color:${profitColor}">${FMT.format(pr)}</strong> 원</td>
+    <td><div class="ratio-bar-wrap"><div class="ratio-bar" style="background:${profitColor};width:${Math.min(prRatio*2.5,110)}px"></div><span class="ratio-text">${prRatio.toFixed(1)}%</span></div></td>
     <td style="color:var(--muted)">—</td>
   </tr>`;
   tbody.innerHTML += `<tr class="total-row">
     <td><div class="cat-chip"><div class="cat-badge" style="background:#e0e7ff">📊</div><span>합계</span></div></td>
-    <td>${FMT.format(salary)} 원</td>
+    <td>${FMT.format(income)} 원</td>
     <td><span style="color:var(--accent);font-weight:700">100%</span></td>
     <td style="color:var(--muted)">100%</td>
   </tr>`;
 
-  // Donut — expenses only
+  // Donut
   if(donutChart) donutChart.destroy();
   donutChart = new Chart(document.getElementById('donutChart'), {
     type:'doughnut',
-    data:{ labels:[...cats.map(c=>c.label),'저축·투자'], datasets:[{ data:[...cats.map(c=>data[c.id]||0), Math.max(sav,0)], backgroundColor:[...colors,'#5b51f0'], borderWidth:3, borderColor:'#fff' }] },
-    options:{ responsive:true, maintainAspectRatio:false, cutout:'62%', plugins:{ legend:{position:'right',labels:{color:'#6b7280',font:{family:'Noto Sans KR',size:11},padding:10,boxWidth:10,usePointStyle:true}}, tooltip:{callbacks:{label:ctx=>` ${FMT.format(ctx.raw)} 원 (${salary>0?(ctx.raw/salary*100).toFixed(1):0}%)`}} } }
+    data:{ labels:[...cats.map(c=>c.label), profitLabel], datasets:[{ data:[...cats.map(c=>data[c.id]||0), Math.max(profit,0)], backgroundColor:[...colors, isBiz?'#059669':'#5b51f0'], borderWidth:3, borderColor:'#fff' }] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'62%', plugins:{ legend:{position:'right',labels:{color:'#6b7280',font:{family:'Noto Sans KR',size:11},padding:10,boxWidth:10,usePointStyle:true}}, tooltip:{callbacks:{label:ctx=>` ${FMT.format(ctx.raw)} 원 (${income>0?(ctx.raw/income*100).toFixed(1):0}%)`}} } }
   });
 
   // Bar
   if(barChart) barChart.destroy();
   barChart = new Chart(document.getElementById('barChart'), {
     type:'bar',
-    data:{ labels:cats.map(c=>c.label), datasets:[{data:cats.map(c=>data[c.id]||0),backgroundColor:colors,borderRadius:8,borderSkipped:false}] },
+    data:{ labels:cats.map(c=>c.label), datasets:[{data:cats.map(c=>data[c.id]||0), backgroundColor:colors, borderRadius:8, borderSkipped:false}] },
     options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${FMT.format(ctx.raw)} 원`}}}, scales:{ x:{ticks:{color:'#9ca3af',font:{family:'Noto Sans KR',size:10}},grid:{display:false}}, y:{ticks:{color:'#9ca3af',font:{size:10},callback:v=>toWon(v)},grid:{color:'#f0f1f7'}} } }
   });
 
-  renderHistory(cats);
+  renderHistory(cats, isBiz, profitColor, profitLabel);
 }
 
-function renderHistory(cats) {
+function renderHistory(cats, isBiz, profitColor, profitLabel) {
   const months = allMonths().sort();
-  if(!months.length) return;
+  if (!months.length) return;
   const labels = months.map(m=>{ const [y,mo]=m.split('-'); return `${y.slice(2)}/${parseInt(mo)}`; });
-  const inc  = months.map(m=>(getData(m)||{}).salary||0);
-  const exp  = months.map(m=>{ const d=getData(m)||{}; return (cats||getCats()).reduce((s,c)=>s+(d[c.id]||0),0); });
-  const sav  = months.map(m=>{ const d=getData(m)||{}; return Math.max(d._savings??(d.salary-exp[months.indexOf(m)]),0); });
+  const inc    = months.map(m=>(getData(m)||{}).income||0);
+  const costs  = months.map(m=>{ const d=getData(m)||{}; return cats.reduce((s,c)=>s+(d[c.id]||0),0); });
+  const profit = months.map(m=>{ const d=getData(m)||{}; return Math.max(d._profit??(d.income-costs[months.indexOf(m)]),0); });
+
   if(histChart) histChart.destroy();
   const el = document.getElementById('histChart');
-  if(!el) return;
+  if (!el) return;
   histChart = new Chart(el, {
     type:'line',
     data:{ labels, datasets:[
-      {label:'수입',data:inc,borderColor:'#12b76a',backgroundColor:'rgba(18,183,106,.07)',tension:.4,fill:true,pointRadius:5,pointBackgroundColor:'#12b76a'},
-      {label:'지출',data:exp,borderColor:'#f04438',backgroundColor:'rgba(240,68,56,.05)',tension:.4,fill:true,pointRadius:5,pointBackgroundColor:'#f04438'},
-      {label:'저축',data:sav,borderColor:'#5b51f0',backgroundColor:'rgba(91,81,240,.05)',tension:.4,fill:true,pointRadius:5,pointBackgroundColor:'#5b51f0'},
+      {label: isBiz?'매출':'수입', data:inc,    borderColor:'#12b76a', backgroundColor:'rgba(18,183,106,.07)', tension:.4, fill:true, pointRadius:5, pointBackgroundColor:'#12b76a'},
+      {label: isBiz?'비용':'지출', data:costs,  borderColor:'#f04438', backgroundColor:'rgba(240,68,56,.05)',   tension:.4, fill:true, pointRadius:5, pointBackgroundColor:'#f04438'},
+      {label: profitLabel,          data:profit, borderColor:profitColor, backgroundColor:'rgba(91,81,240,.05)', tension:.4, fill:true, pointRadius:5, pointBackgroundColor:profitColor},
     ]},
     options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{color:'#6b7280',font:{family:'Noto Sans KR',size:11},padding:14,boxWidth:10,usePointStyle:true}},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${FMT.format(ctx.raw)} 원`}}}, scales:{ x:{ticks:{color:'#9ca3af',font:{family:'Noto Sans KR',size:10}},grid:{color:'#f0f1f7'}}, y:{ticks:{color:'#9ca3af',font:{size:10},callback:v=>toWon(v)},grid:{color:'#f0f1f7'}} } }
   });
 }
 
-// ── SHARE ─────────────────────────────────────────────────
+// ── SHARE ────────────────────────────────────────────────────────
 function copyLink() {
   navigator.clipboard.writeText(window.location.href).then(()=>{
-    const btn=document.getElementById('copyBtn');
+    const btn = document.getElementById('copyBtn');
     btn.textContent='복사됨 ✓'; btn.classList.add('copied');
-    setTimeout(()=>{ btn.textContent='복사'; btn.classList.remove('copied'); },2000);
+    setTimeout(()=>{btn.textContent='복사';btn.classList.remove('copied');},2000);
     showToast('링크가 복사되었습니다');
   });
 }
@@ -616,7 +616,9 @@ function showToast(msg) {
   setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-// ── INIT ──────────────────────────────────────────────────
+// ── INIT ─────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === currentTab));
+updateSidebarLabels();
 buildMonthList();
 loadForm(document.getElementById('monthSelect').value);
 renderDashboard(document.getElementById('monthSelect').value);
