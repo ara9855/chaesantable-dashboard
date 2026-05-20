@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>개인 채산표</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a22;
+      --surface2: #22222e;
+      --border: #2e2e3e;
+      --accent: #6c63ff;
+      --accent2: #a78bfa;
+      --green: #34d399;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --text: #e8e8f0;
+      --muted: #8888aa;
+      --radius: 16px;
+
+      --c1: #6c63ff;
+      --c2: #34d399;
+      --c3: #f87171;
+      --c4: #fbbf24;
+      --c5: #60a5fa;
+      --c6: #f472b6;
+      --c7: #a78bfa;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, #1a1a22 0%, #16162a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header-right { display: flex; gap: 12px; align-items: center; }
+    .user-pill {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 50px; padding: 6px 16px;
+      font-size: 0.8rem; color: var(--muted);
+    }
+    .user-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 65px);
+    }
+
+    /* ── SIDEBAR ── */
+    aside {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 28px 24px;
+      overflow-y: auto;
+    }
+    aside h2 {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .month-selector {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 24px;
+    }
+    .month-selector select {
+      flex: 1;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); border-radius: 10px;
+      padding: 10px 14px; font-size: 0.9rem;
+      font-family: inherit; cursor: pointer;
+      appearance: none;
+    }
+    .btn-icon {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); border-radius: 10px;
+      width: 40px; height: 40px;
+      cursor: pointer; font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Form fields */
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block; font-size: 0.75rem; font-weight: 500;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .field-row {
+      display: flex; align-items: center;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .field-row:focus-within { border-color: var(--accent); }
+    .field-icon {
+      width: 36px; text-align: center;
+      font-size: 1rem; color: var(--muted);
+      flex-shrink: 0;
+    }
+    .field-row input {
+      flex: 1; background: transparent; border: none;
+      color: var(--text); padding: 10px 12px 10px 0;
+      font-size: 0.9rem; font-family: inherit;
+      outline: none;
+    }
+    .field-row input::placeholder { color: var(--muted); opacity: 0.6; }
+    .field-unit {
+      padding: 0 12px; color: var(--muted); font-size: 0.78rem;
+      border-left: 1px solid var(--border);
+    }
+
+    .section-divider {
+      display: flex; align-items: center; gap: 10px;
+      margin: 20px 0 16px;
+    }
+    .section-divider span {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
+      color: var(--muted); text-transform: uppercase; white-space: nowrap;
+    }
+    .section-divider::before, .section-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .category-dot {
+      display: inline-block; width: 8px; height: 8px;
+      border-radius: 2px; margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .btn-save {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--accent), #7c3aed);
+      border: none; border-radius: 12px;
+      color: #fff; font-size: 0.95rem; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      margin-top: 20px; transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-save:hover { opacity: 0.9; }
+    .btn-save:active { transform: scale(0.98); }
+
+    /* Share link section */
+    .share-box {
+      margin-top: 28px; padding: 16px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .share-box h3 {
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--muted); margin-bottom: 10px; letter-spacing: 0.05em;
+    }
+    .share-url {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .share-url input {
+      flex: 1; background: var(--bg); border: 1px solid var(--border);
+      color: var(--muted); border-radius: 8px; padding: 8px 10px;
+      font-size: 0.72rem; font-family: monospace; outline: none;
+    }
+    .btn-copy {
+      background: var(--accent); border: none; border-radius: 8px;
+      color: #fff; padding: 8px 14px; font-size: 0.78rem;
+      font-weight: 600; font-family: inherit; cursor: pointer;
+      white-space: nowrap; transition: opacity 0.2s;
+    }
+    .btn-copy:hover { opacity: 0.85; }
+    .btn-copy.copied { background: var(--green); }
+
+    /* ── MAIN CONTENT ── */
+    main { padding: 28px 32px; overflow-y: auto; }
+
+    /* Summary cards */
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+    }
+    .card.income::before { background: var(--green); }
+    .card.expense::before { background: var(--red); }
+    .card.savings::before { background: var(--accent); }
+    .card.ratio::before { background: var(--yellow); }
+
+    .card-label { font-size: 0.72rem; font-weight: 500; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.05em; }
+    .card-value { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+    .card-value.green { color: var(--green); }
+    .card-value.red { color: var(--red); }
+    .card-value.accent { color: var(--accent2); }
+    .card-value.yellow { color: var(--yellow); }
+    .card-sub { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+    /* Charts grid */
+    .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+    .chart-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+    }
+    .chart-card h3 {
+      font-size: 0.8rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px;
+    }
+    .chart-wrap { position: relative; height: 220px; }
+
+    /* Category breakdown table */
+    .table-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      margin-bottom: 20px;
+    }
+    .table-card h3 {
+      font-size: 0.8rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left; font-size: 0.72rem; font-weight: 600;
+      color: var(--muted); padding: 0 12px 12px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    th:not(:first-child) { text-align: right; }
+    td { padding: 12px; font-size: 0.88rem; border-bottom: 1px solid var(--border); }
+    td:not(:first-child) { text-align: right; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--surface2); }
+
+    .ratio-bar-wrap {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .ratio-bar {
+      height: 6px; border-radius: 3px;
+      min-width: 4px;
+      transition: width 0.5s ease;
+    }
+    .ratio-text { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+
+    /* History */
+    .history-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+    }
+    .history-card h3 {
+      font-size: 0.8rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px;
+    }
+    .chart-wrap-wide { position: relative; height: 180px; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      background: var(--green); color: #0f2218;
+      padding: 10px 24px; border-radius: 50px;
+      font-size: 0.85rem; font-weight: 600;
+      opacity: 0; transition: opacity 0.3s;
+      pointer-events: none; z-index: 999;
+    }
+    .toast.show { opacity: 1; }
+
+    /* Empty state */
+    .empty {
+      text-align: center; padding: 60px 20px;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 16px; }
+    .empty h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+    .empty p { font-size: 0.85rem; }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { border-right: none; border-bottom: 1px solid var(--border); }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+      .charts { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      header { padding: 16px 18px; }
+      main { padding: 20px 16px; }
+      aside { padding: 20px 16px; }
+      .cards { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">💰 개인 채산표</div>
+  <div class="header-right">
+    <div class="user-pill">
+      <span class="user-dot"></span>
+      <span id="userId-display">로딩 중...</span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR: 입력 폼 -->
+  <aside>
+    <h2>데이터 입력</h2>
+
+    <div class="month-selector">
+      <select id="monthSelect"></select>
+      <button class="btn-icon" onclick="addMonth()">＋</button>
+    </div>
+
+    <div class="field">
+      <label>💼 급여 (월 수입)</label>
+      <div class="field-row">
+        <span class="field-icon">₩</span>
+        <input type="number" id="salary" placeholder="4,951,667" />
+        <span class="field-unit">원</span>
+      </div>
+    </div>
+
+    <div class="section-divider"><span>지출 항목</span></div>
+
+    <div class="field">
+      <label><span class="category-dot" style="background:var(--c2)"></span>식비</label>
+      <div class="field-row">
+        <span class="field-icon">🍽</span>
+        <input type="number" id="food" placeholder="500,000" />
+        <span class="field-unit">원</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label><span class="category-dot" style="background:var(--c3)"></span>주거비</label>
+      <div class="field-row">
+        <span class="field-icon">🏠</span>
+        <input type="number" id="housing" placeholder="400,000" />
+        <span class="field-unit">원</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label><span class="category-dot" style="background:var(--c4)"></span>교통비</label>
+      <div class="field-row">
+        <span class="field-icon">🚌</span>
+        <input type="number" id="transport" placeholder="100,000" />
+        <span class="field-unit">원</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label><span class="category-dot" style="background:var(--c5)"></span>성장비 (교육)</label>
+      <div class="field-row">
+        <span class="field-icon">📚</span>
+        <input type="number" id="education" placeholder="0" />
+        <span class="field-unit">원</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label><span class="category-dot" style="background:var(--c6)"></span>취향비 (취미·여행·쇼핑)</label>
+      <div class="field-row">
+        <span class="field-icon">🎨</span>
+        <input type="number" id="lifestyle" placeholder="300,000" />
+        <span class="field-unit">원</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label><span class="category-dot" style="background:var(--c7)"></span>대출 상환</label>
+      <div class="field-row">
+        <span class="field-icon">🏦</span>
+        <input type="number" id="loan" placeholder="1,200,000" />
+        <span class="field-unit">원</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label><span class="category-dot" style="background:var(--c1)"></span>저축 및 투자</label>
+      <div class="field-row">
+        <span class="field-icon">📈</span>
+        <input type="number" id="savings" placeholder="0" />
+        <span class="field-unit">원</span>
+      </div>
+    </div>
+
+    <button class="btn-save" onclick="saveData()">저장하기</button>
+
+    <!-- Share -->
+    <div class="share-box">
+      <h3>🔗 내 채산표 공유 링크</h3>
+      <div class="share-url">
+        <input type="text" id="shareUrl" readonly />
+        <button class="btn-copy" id="copyBtn" onclick="copyLink()">복사</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN: 대시보드 -->
+  <main id="dashboard">
+    <div class="empty">
+      <div class="empty-icon">📊</div>
+      <h3>데이터를 입력해 주세요</h3>
+      <p>왼쪽 폼에서 수입과 지출을 입력하고 저장하면<br />대시보드가 표시됩니다.</p>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── USER ID ──────────────────────────────────────────────
+function getUserId() {
+  const params = new URLSearchParams(window.location.search);
+  let uid = params.get('user');
+  if (!uid) {
+    uid = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36);
+    const url = new URL(window.location.href);
+    url.searchParams.set('user', uid);
+    window.history.replaceState({}, '', url.toString());
+  }
+  return uid;
+}
+
+const UID = getUserId();
+document.getElementById('userId-display').textContent = UID.slice(0, 8) + '...';
+
+const shareUrlEl = document.getElementById('shareUrl');
+shareUrlEl.value = window.location.href;
+
+// ── STORAGE ──────────────────────────────────────────────
+function storageKey(month) { return `채산표_${UID}_${month}`; }
+function allMonthKeys() {
+  return Object.keys(localStorage)
+    .filter(k => k.startsWith(`채산표_${UID}_`))
+    .map(k => k.replace(`채산표_${UID}_`, ''))
+    .sort();
+}
+
+function getData(month) {
+  const raw = localStorage.getItem(storageKey(month));
+  return raw ? JSON.parse(raw) : null;
+}
+function setData(month, data) {
+  localStorage.setItem(storageKey(month), JSON.stringify(data));
+}
+
+// ── MONTH SELECT ──────────────────────────────────────────
+function currentYearMonth() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function buildMonthList() {
+  const sel = document.getElementById('monthSelect');
+  const existing = allMonthKeys();
+  const current = currentYearMonth();
+  const months = new Set([...existing, current]);
+  const sorted = [...months].sort().reverse();
+  const prev = sel.value;
+  sel.innerHTML = '';
+  sorted.forEach(m => {
+    const [y, mo] = m.split('-');
+    const label = `${y}년 ${parseInt(mo)}월`;
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = label;
+    sel.appendChild(opt);
+  });
+  sel.value = prev && months.has(prev) ? prev : sorted[0];
+}
+
+function addMonth() {
+  const sel = document.getElementById('monthSelect');
+  const cur = sel.value;
+  const d = new Date(cur + '-01');
+  d.setMonth(d.getMonth() - 1);
+  const newM = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  buildMonthList();
+  const existing = allMonthKeys();
+  if (!existing.includes(newM)) {
+    // Add blank entry so it appears
+    const ms = new Set([...existing, newM]);
+    const sorted = [...ms].sort().reverse();
+    const sel2 = document.getElementById('monthSelect');
+    const mo = newM.split('-');
+    const opt = document.createElement('option');
+    opt.value = newM; opt.textContent = `${mo[0]}년 ${parseInt(mo[1])}월`;
+    sel2.insertBefore(opt, sel2.lastElementChild);
+  }
+  document.getElementById('monthSelect').value = newM;
+  loadForm(newM);
+}
+
+document.getElementById('monthSelect').addEventListener('change', e => {
+  loadForm(e.target.value);
+  renderDashboard(e.target.value);
+});
+
+// ── FORM LOAD / SAVE ──────────────────────────────────────
+const FIELDS = ['salary','food','housing','transport','education','lifestyle','loan','savings'];
+
+function loadForm(month) {
+  const data = getData(month);
+  FIELDS.forEach(f => {
+    document.getElementById(f).value = data ? (data[f] || '') : '';
+  });
+}
+
+function saveData() {
+  const month = document.getElementById('monthSelect').value;
+  const data = {};
+  FIELDS.forEach(f => { data[f] = parseFloat(document.getElementById(f).value) || 0; });
+  setData(month, data);
+  buildMonthList();
+  renderDashboard(month);
+  showToast('저장되었습니다 ✓');
+}
+
+// ── HELPERS ──────────────────────────────────────────────
+const FMT = new Intl.NumberFormat('ko-KR');
+const COLORS = ['var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)','var(--c6)','var(--c7)'];
+const COLORS_HEX = ['#6c63ff','#34d399','#f87171','#fbbf24','#60a5fa','#f472b6','#a78bfa'];
+
+const CATEGORIES = [
+  { id:'food',       label:'식비',               icon:'🍽' },
+  { id:'housing',    label:'주거비',             icon:'🏠' },
+  { id:'transport',  label:'교통비',             icon:'🚌' },
+  { id:'education',  label:'성장비',             icon:'📚' },
+  { id:'lifestyle',  label:'취향비',             icon:'🎨' },
+  { id:'loan',       label:'대출 상환',          icon:'🏦' },
+  { id:'savings',    label:'저축·투자',          icon:'📈' },
+];
+
+function toWon(n) {
+  if (n >= 100000000) return (n/100000000).toFixed(1) + '억';
+  if (n >= 10000) return Math.round(n/10000) + '만';
+  return FMT.format(n);
+}
+
+// ── DASHBOARD RENDER ──────────────────────────────────────
+let donutChart = null, barChart = null, historyChart = null;
+
+function renderDashboard(month) {
+  const data = getData(month);
+  const main = document.getElementById('dashboard');
+
+  if (!data || data.salary === 0) {
+    main.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><h3>데이터가 없습니다</h3><p>왼쪽 폼에서 데이터를 입력하고 저장하세요.</p></div>`;
+    if (donutChart) { donutChart.destroy(); donutChart = null; }
+    if (barChart) { barChart.destroy(); barChart = null; }
+    if (historyChart) { historyChart.destroy(); historyChart = null; }
+    return;
+  }
+
+  const salary = data.salary || 0;
+  const expenses = CATEGORIES.filter(c => c.id !== 'savings').reduce((s, c) => s + (data[c.id]||0), 0);
+  const savingsAmt = data.savings || 0;
+  const totalOut = expenses + savingsAmt;
+  const free = salary - totalOut;
+  const savingsRatio = salary > 0 ? ((savingsAmt / salary) * 100) : 0;
+
+  main.innerHTML = `
+    <!-- Summary Cards -->
+    <div class="cards">
+      <div class="card income">
+        <div class="card-label">월 수입</div>
+        <div class="card-value green">${FMT.format(salary)}<span style="font-size:0.8rem;font-weight:400;color:var(--muted)"> 원</span></div>
+      </div>
+      <div class="card expense">
+        <div class="card-label">총 지출</div>
+        <div class="card-value red">${FMT.format(expenses)}<span style="font-size:0.8rem;font-weight:400;color:var(--muted)"> 원</span></div>
+        <div class="card-sub">수입의 ${salary>0?((expenses/salary)*100).toFixed(1):0}%</div>
+      </div>
+      <div class="card savings">
+        <div class="card-label">저축·투자</div>
+        <div class="card-value accent">${FMT.format(savingsAmt)}<span style="font-size:0.8rem;font-weight:400;color:var(--muted)"> 원</span></div>
+        <div class="card-sub">저축률 ${savingsRatio.toFixed(1)}%</div>
+      </div>
+      <div class="card ratio">
+        <div class="card-label">잉여금</div>
+        <div class="card-value ${free>=0?'yellow':'red'}">${free<0?'-':''}${FMT.format(Math.abs(free))}<span style="font-size:0.8rem;font-weight:400;color:var(--muted)"> 원</span></div>
+        <div class="card-sub">${free<0?'⚠ 적자':'안전 수준'}</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts">
+      <div class="chart-card">
+        <h3>지출 구성</h3>
+        <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>항목별 금액</h3>
+        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Breakdown Table -->
+    <div class="table-card">
+      <h3>항목별 상세</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th>금액</th>
+            <th>비율 (수입 대비)</th>
+            <th>비율 (지출 대비)</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- History -->
+    <div class="history-card">
+      <h3>월별 추이</h3>
+      <div class="chart-wrap-wide"><canvas id="historyChart"></canvas></div>
+    </div>
+  `;
+
+  // Table
+  const tbody = document.getElementById('tableBody');
+  CATEGORIES.forEach((cat, i) => {
+    const amt = data[cat.id] || 0;
+    const ratioIncome = salary > 0 ? (amt / salary * 100) : 0;
+    const ratioExpense = expenses > 0 && cat.id !== 'savings' ? (amt / expenses * 100) : 0;
+    const barW = Math.min(ratioIncome * 2, 120);
+    tbody.innerHTML += `
+      <tr>
+        <td><span class="category-dot" style="background:${COLORS[i]}"></span>${cat.icon} ${cat.label}</td>
+        <td><strong>${FMT.format(amt)}</strong> 원</td>
+        <td>
+          <div class="ratio-bar-wrap">
+            <div class="ratio-bar" style="background:${COLORS[i]};width:${barW}px"></div>
+            <span class="ratio-text">${ratioIncome.toFixed(1)}%</span>
+          </div>
+        </td>
+        <td style="color:var(--muted)">${cat.id !== 'savings' ? ratioExpense.toFixed(1)+'%' : '—'}</td>
+      </tr>
+    `;
+  });
+  // Total row
+  tbody.innerHTML += `
+    <tr style="font-weight:700;border-top:2px solid var(--border)">
+      <td>합계</td>
+      <td>${FMT.format(totalOut)} 원</td>
+      <td><span style="color:var(--yellow)">${salary>0?((totalOut/salary)*100).toFixed(1):0}%</span></td>
+      <td>100%</td>
+    </tr>
+  `;
+
+  // Donut chart
+  if (donutChart) donutChart.destroy();
+  const donutData = CATEGORIES.map(c => data[c.id] || 0);
+  donutChart = new Chart(document.getElementById('donutChart'), {
+    type: 'doughnut',
+    data: {
+      labels: CATEGORIES.map(c => c.label),
+      datasets: [{ data: donutData, backgroundColor: COLORS_HEX, borderWidth: 2, borderColor: '#1a1a22' }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { position: 'right', labels: { color: '#8888aa', font: { family: 'Noto Sans KR', size: 11 }, padding: 12, boxWidth: 12 } },
+        tooltip: { callbacks: { label: ctx => ` ${FMT.format(ctx.raw)} 원 (${salary>0?(ctx.raw/salary*100).toFixed(1):0}%)` } }
+      }
+    }
+  });
+
+  // Bar chart
+  if (barChart) barChart.destroy();
+  barChart = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: CATEGORIES.map(c => c.label),
+      datasets: [{
+        data: CATEGORIES.map(c => data[c.id] || 0),
+        backgroundColor: COLORS_HEX,
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${FMT.format(ctx.raw)} 원` } } },
+      scales: {
+        x: { ticks: { color: '#8888aa', font: { family: 'Noto Sans KR', size: 10 } }, grid: { color: 'transparent' } },
+        y: { ticks: { color: '#8888aa', font: { size: 10 }, callback: v => toWon(v) }, grid: { color: '#2e2e3e' } }
+      }
+    }
+  });
+
+  // History chart
+  renderHistory();
+}
+
+function renderHistory() {
+  const months = allMonthKeys().sort();
+  if (months.length < 1) return;
+
+  const labels = months.map(m => { const [y,mo]=m.split('-'); return `${y.slice(2)}년 ${parseInt(mo)}월`; });
+  const incomes = months.map(m => (getData(m)||{}).salary || 0);
+  const exps = months.map(m => {
+    const d = getData(m)||{};
+    return CATEGORIES.filter(c=>c.id!=='savings').reduce((s,c)=>s+(d[c.id]||0),0);
+  });
+  const savs = months.map(m => (getData(m)||{}).savings || 0);
+
+  if (historyChart) historyChart.destroy();
+  const el = document.getElementById('historyChart');
+  if (!el) return;
+  historyChart = new Chart(el, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: '수입', data: incomes, borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.1)', tension: 0.4, fill: false, pointRadius: 5 },
+        { label: '지출', data: exps, borderColor: '#f87171', backgroundColor: 'rgba(248,113,113,0.1)', tension: 0.4, fill: false, pointRadius: 5 },
+        { label: '저축', data: savs, borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.1)', tension: 0.4, fill: false, pointRadius: 5 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#8888aa', font: { family: 'Noto Sans KR', size: 11 }, padding: 16, boxWidth: 12 } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${FMT.format(ctx.raw)} 원` } }
+      },
+      scales: {
+        x: { ticks: { color: '#8888aa', font: { family: 'Noto Sans KR', size: 10 } }, grid: { color: '#2e2e3e' } },
+        y: { ticks: { color: '#8888aa', font: { size: 10 }, callback: v => toWon(v) }, grid: { color: '#2e2e3e' } }
+      }
+    }
+  });
+}
+
+// ── SHARE ──────────────────────────────────────────────────
+function copyLink() {
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '복사됨 ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 2000);
+    showToast('링크가 복사되었습니다');
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── INIT ──────────────────────────────────────────────────
+buildMonthList();
+const initMonth = document.getElementById('monthSelect').value;
+loadForm(initMonth);
+renderDashboard(initMonth);
+</script>
+</body>
+</html>
